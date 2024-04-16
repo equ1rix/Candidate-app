@@ -1,8 +1,8 @@
 import { Box, Grid } from '@mui/material';
 
-import Candidates from '../components/candidates';
-import Header from '../components/header';
-import Sidebar from '../components/sidebar';
+import Candidates from '@components/Candidates';
+import Sidebar from '@components/Sidebar';
+import Header from '@components/Header';
 
 const Homepage = () => {
   return (
