@@ -12,7 +12,7 @@ const Homepage = () => {
           <Sidebar />
         </Grid>
         <Grid item xs={9} sm={10}>
-          <Header />
+          <Header isAuthenticated={true} />
           <Candidates />
         </Grid>
       </Grid>

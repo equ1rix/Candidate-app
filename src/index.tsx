@@ -1,10 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
+import { getAuth } from 'firebase/auth';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import './index.css';
+import { UserAuthContextProvider } from 'context/UserAuthContext';
+import ProtectedRoute from 'helpers/ProtectedRoute';
 
+import _Homepage from 'pages/Homepage';
+import Authpage from 'pages/Authpage';
 import Homepage from 'pages/Homepage';
 
 const firebaseConfig = {
@@ -19,14 +24,29 @@ const firebaseConfig = {
   measurementId: 'G-2E9XY1KHH7'
 };
 
-const app = initializeApp(firebaseConfig);
-const _analytics = getAnalytics(app);
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Homepage />
+    <UserAuthContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/auth" />} />
+          <Route path="/auth" element={<Authpage />} />
+          <Route
+            path="/homepage"
+            element={
+              <ProtectedRoute>
+                <Homepage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </UserAuthContextProvider>
   </React.StrictMode>
 );
