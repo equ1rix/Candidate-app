@@ -9,16 +9,19 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  signOut
+  signInWithPopup,
+  signOut,
+  UserCredential
 } from 'firebase/auth';
 
-import { auth } from 'index';
+import { auth, provider } from 'helpers/firebaseConfig';
 
 type UserAuthContextType = {
   user: string;
   signUp: (email: string, password: string) => void;
   logIn: (email: string, password: string) => void;
   logOut: () => void;
+  googleAuth: () => void;
 };
 
 export const userAuthContext = createContext<UserAuthContextType | undefined>(
@@ -44,6 +47,19 @@ export const UserAuthContextProvider = ({
     return signOut(auth);
   };
 
+  const googleAuth = async () => {
+    try {
+      const result: UserCredential = await signInWithPopup(auth, provider);
+      const user = result.user;
+      if (user) {
+        setUser(user.uid);
+      }
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      console.log(errorMessage);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
@@ -59,7 +75,8 @@ export const UserAuthContextProvider = ({
     user,
     signUp,
     logIn,
-    logOut
+    logOut,
+    googleAuth
   };
 
   return (

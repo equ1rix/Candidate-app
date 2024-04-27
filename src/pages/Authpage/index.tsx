@@ -12,13 +12,14 @@ import { useNavigate } from 'react-router-dom';
 import { userAuthContext } from 'context/UserAuthContext';
 import Header from 'components/Header';
 import Label from 'components/Label';
+import { auth } from 'helpers/firebaseConfig';
 
 const Authpage = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isSignUp, setIsSignUp] = useState<boolean>(true);
   const navigate = useNavigate();
-  const { signUp, logIn } = useContext(userAuthContext)!;
+  const { signUp, logIn, googleAuth } = useContext(userAuthContext)!;
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -30,7 +31,6 @@ const Authpage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (isSignUp) {
       try {
         await signUp!(email, password);
@@ -45,6 +45,16 @@ const Authpage = () => {
       } catch (err) {
         console.log((err as Error).message);
       }
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    await googleAuth();
+    const currentUser = await auth.currentUser;
+    if (currentUser) {
+      navigate('/homepage');
+    } else {
+      console.log('Error');
     }
   };
 
@@ -110,6 +120,13 @@ const Authpage = () => {
                   sx={{ backgroundColor: 'darkgreen' }}
                 >
                   <Label label={isSignUp ? 'Sing-Up' : 'LogIn'} />
+                </Button>
+                <Button
+                  onClick={handleGoogleSignIn}
+                  variant="contained"
+                  sx={{ backgroundColor: 'green', marginLeft: '20px' }}
+                >
+                  <Label label="Sing-In google" />
                 </Button>
               </Grid>
             </Grid>
