@@ -11,13 +11,14 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  User,
   UserCredential
 } from 'firebase/auth';
 
 import { auth, provider } from 'helpers/firebaseConfig';
 
 type UserAuthContextType = {
-  user: string;
+  user: User | null;
   signUp: (email: string, password: string) => void;
   logIn: (email: string, password: string) => void;
   logOut: () => void;
@@ -33,7 +34,7 @@ export const UserAuthContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [user, setUser] = useState<string>('');
+  const [user, setUser] = useState<User | null>(null);
 
   const signUp = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -52,7 +53,7 @@ export const UserAuthContextProvider = ({
       const result: UserCredential = await signInWithPopup(auth, provider);
       const user = result.user;
       if (user) {
-        setUser(user.uid);
+        setUser(user);
       }
     } catch (error) {
       const errorMessage = (error as Error).message;
@@ -63,9 +64,9 @@ export const UserAuthContextProvider = ({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        setUser(currentUser.uid);
+        setUser(currentUser);
       } else {
-        setUser('');
+        setUser(null);
       }
     });
     return () => unsubscribe();

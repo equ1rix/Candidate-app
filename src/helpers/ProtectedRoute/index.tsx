@@ -6,7 +6,7 @@ import { useUserAuth } from 'context/UserAuthContext';
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { user } = useUserAuth();
   if (!user) {
-    return <Navigate to="/auth" />;
+    return <Navigate to="/singup" />;
   }
   return <>{children}</>;
 };

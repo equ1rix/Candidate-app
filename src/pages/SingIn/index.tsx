@@ -1,25 +1,25 @@
-import React, { useContext, useState } from 'react';
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  TextField,
-  Typography
-} from '@mui/material';
+import { useContext, useState } from 'react';
+import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import { userAuthContext } from 'context/UserAuthContext';
-import Header from 'components/Header';
-import Label from 'components/Label';
 import { auth } from 'helpers/firebaseConfig';
+import Label from 'components/Label';
+import Header from 'components/Header';
+import {
+  addDoc,
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where
+} from 'firebase/firestore';
 
-const Authpage = () => {
+const SingIn = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [isSignUp, setIsSignUp] = useState<boolean>(true);
+  const { logIn, googleAuth } = useContext(userAuthContext)!;
   const navigate = useNavigate();
-  const { signUp, logIn, googleAuth } = useContext(userAuthContext)!;
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -29,37 +29,39 @@ const Authpage = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (isSignUp) {
-      try {
-        await signUp!(email, password);
-        navigate('/homepage');
-      } catch (err) {
-        console.log((err as Error).message);
-      }
-    } else {
-      try {
-        await logIn!(email, password);
-        navigate('/homepage');
-      } catch (err) {
-        console.log((err as Error).message);
-      }
-    }
-  };
-
   const handleGoogleSignIn = async () => {
     await googleAuth();
     const currentUser = await auth.currentUser;
     if (currentUser) {
+      const { displayName, email: userEmail, uid } = currentUser;
+      const nameToSave = displayName ? displayName : userEmail;
+
+      const db = getFirestore();
+      const usersRef = collection(db, 'users');
+      const userSnapshot = await getDocs(
+        query(usersRef, where('email', '==', userEmail))
+      );
+      if (userSnapshot.empty) {
+        await addDoc(usersRef, {
+          name: nameToSave,
+          id: uid,
+          email: userEmail
+        });
+      }
       navigate('/homepage');
     } else {
       console.log('Error');
     }
   };
 
-  const toggleAuthenticationMode = () => {
-    setIsSignUp((prevMode) => !prevMode);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await logIn!(email, password);
+      navigate('/homepage');
+    } catch (err) {
+      console.log((err as Error).message);
+    }
   };
 
   return (
@@ -106,25 +108,26 @@ const Authpage = () => {
                 </FormControl>
               </Grid>
               <Grid item>
-                <Button onClick={toggleAuthenticationMode} sx={{ mt: 2 }}>
-                  <Typography
-                    variant="body1"
-                    sx={{ textDecoration: 'underline' }}
-                  >
-                    {isSignUp ? 'LogIn' : 'Sing-Up'}
-                  </Typography>
+                <Button
+                  onClick={() => {
+                    navigate('/singup');
+                  }}
+                  variant="contained"
+                  sx={{ backgroundColor: 'green' }}
+                >
+                  <Label label="SingUp" />
                 </Button>
                 <Button
                   type="submit"
                   variant="contained"
-                  sx={{ backgroundColor: 'darkgreen' }}
+                  sx={{ backgroundColor: 'darkgreen', marginLeft: '20px' }}
                 >
-                  <Label label={isSignUp ? 'Sing-Up' : 'LogIn'} />
+                  <Label label="LogIn" />
                 </Button>
                 <Button
                   onClick={handleGoogleSignIn}
                   variant="contained"
-                  sx={{ backgroundColor: 'green', marginLeft: '20px' }}
+                  sx={{ backgroundColor: 'green', marginLeft: '40px' }}
                 >
                   <Label label="Sing-In google" />
                 </Button>
@@ -137,4 +140,4 @@ const Authpage = () => {
   );
 };
 
-export default Authpage;
+export default SingIn;

@@ -6,9 +6,9 @@ import './index.css';
 import { UserAuthContextProvider } from 'context/UserAuthContext';
 import ProtectedRoute from 'helpers/ProtectedRoute';
 
-import _Homepage from 'pages/Homepage';
-import Authpage from 'pages/Authpage';
 import Homepage from 'pages/Homepage';
+import SingIn from 'pages/SingIn';
+import SingUp from 'pages/SingUp';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -18,8 +18,9 @@ root.render(
     <UserAuthContextProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/auth" />} />
-          <Route path="/auth" element={<Authpage />} />
+          <Route path="/" element={<Navigate to="/singup" />} />
+          <Route path="/singin" element={<SingIn />} />
+          <Route path="/singup" element={<SingUp />} />
           <Route
             path="/homepage"
             element={

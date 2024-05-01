@@ -2,12 +2,8 @@ import { AppBar, Button, Toolbar, Typography } from '@mui/material';
 
 import { useUserAuth } from 'context/UserAuthContext';
 
-type HeaderProps = {
-  isAuthenticated?: boolean;
-};
-
-const Header = ({ isAuthenticated = false }: HeaderProps) => {
-  const { logOut } = useUserAuth();
+const Header = () => {
+  const { logOut, user } = useUserAuth();
   const handleLogOut = async () => {
     try {
       await logOut();
@@ -21,7 +17,7 @@ const Header = ({ isAuthenticated = false }: HeaderProps) => {
         <Typography variant="h6" component="div">
           Header
         </Typography>
-        {isAuthenticated && (
+        {user && (
           <Button color="inherit" onClick={handleLogOut}>
             Logout
           </Button>
