@@ -2,23 +2,16 @@ import { useContext, useState } from 'react';
 import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { userAuthContext } from 'context/UserAuthContext';
-import { auth } from 'helpers/firebaseConfig';
+import { modalBG, title } from 'helpers/styles';
+import { UserAuthContext } from 'context/UserAuthContext';
+
 import Label from 'components/Label';
 import Header from 'components/Header';
-import {
-  addDoc,
-  collection,
-  getDocs,
-  getFirestore,
-  query,
-  where
-} from 'firebase/firestore';
 
 const SingIn = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const { logIn, googleAuth } = useContext(userAuthContext)!;
+  const { logIn, googleAuth } = useContext(UserAuthContext);
   const navigate = useNavigate();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,36 +24,15 @@ const SingIn = () => {
 
   const handleGoogleSignIn = async () => {
     await googleAuth();
-    const currentUser = await auth.currentUser;
-    if (currentUser) {
-      const { displayName, email: userEmail, uid } = currentUser;
-      const nameToSave = displayName ? displayName : userEmail;
-
-      const db = getFirestore();
-      const usersRef = collection(db, 'users');
-      const userSnapshot = await getDocs(
-        query(usersRef, where('email', '==', userEmail))
-      );
-      if (userSnapshot.empty) {
-        await addDoc(usersRef, {
-          name: nameToSave,
-          id: uid,
-          email: userEmail
-        });
-      }
-      navigate('/homepage');
-    } else {
-      console.log('Error');
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await logIn!(email, password);
+      await logIn(email, password);
       navigate('/homepage');
     } catch (err) {
-      console.log((err as Error).message);
+      alert(err);
     }
   };
 
@@ -69,7 +41,7 @@ const SingIn = () => {
       <Header />
       <Grid
         container
-        bgcolor="#d1e8e3"
+        bgcolor={title}
         justifyContent="center"
         alignItems="center"
         flexGrow={1}
@@ -78,7 +50,7 @@ const SingIn = () => {
           <Box
             width={450}
             borderRadius="20px"
-            bgcolor="#116466"
+            bgcolor={modalBG}
             p={4}
             boxShadow={3}
           >

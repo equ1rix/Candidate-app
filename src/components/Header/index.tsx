@@ -1,18 +1,19 @@
 import { AppBar, Button, Toolbar, Typography } from '@mui/material';
 
-import { useUserAuth } from 'context/UserAuthContext';
+import { mainBG } from 'helpers/styles';
+import { UserAuthContextType, useUserAuth } from 'context/UserAuthContext';
 
 const Header = () => {
-  const { logOut, user } = useUserAuth();
+  const { logOut, user } = useUserAuth() as UserAuthContextType;
   const handleLogOut = async () => {
     try {
       await logOut();
     } catch (error) {
-      console.log((error as Error).message);
+      alert((error as Error).message);
     }
   };
   return (
-    <AppBar position="static" sx={{ bgcolor: '#2C3531' }}>
+    <AppBar position="static" sx={{ bgcolor: mainBG }}>
       <Toolbar>
         <Typography variant="h6" component="div">
           Header

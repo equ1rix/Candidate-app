@@ -14,10 +14,12 @@ import {
   User,
   UserCredential
 } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 
 import { auth, provider } from 'helpers/firebaseConfig';
 
-type UserAuthContextType = {
+export type UserAuthContextType = {
   user: User | null;
   signUp: (email: string, password: string) => void;
   logIn: (email: string, password: string) => void;
@@ -25,16 +27,23 @@ type UserAuthContextType = {
   googleAuth: () => void;
 };
 
-export const userAuthContext = createContext<UserAuthContextType | undefined>(
-  undefined
-);
+export const UserAuthContext = createContext<UserAuthContextType>({
+  user: null,
+  signUp: () => {},
+  logIn: () => {},
+  logOut: () => {},
+  googleAuth: () => {}
+});
+
+type UserAuthContextProviderProps = {
+  children: ReactNode;
+};
 
 export const UserAuthContextProvider = ({
   children
-}: {
-  children: ReactNode;
-}) => {
+}: UserAuthContextProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
 
   const signUp = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -54,10 +63,25 @@ export const UserAuthContextProvider = ({
       const user = result.user;
       if (user) {
         setUser(user);
+        const { displayName, email: userEmail, uid } = user;
+        const nameToSave = displayName ? displayName : userEmail;
+        const db = getFirestore();
+        const userDocRef = doc(db, 'users', uid);
+        const userDocSnapshot = await getDoc(userDocRef);
+
+        if (!userDocSnapshot.exists()) {
+          await setDoc(userDocRef, {
+            id: uid,
+            name: nameToSave,
+            email: userEmail
+          });
+          navigate('/homepage');
+        } else {
+          navigate('/homepage');
+        }
       }
     } catch (error) {
-      const errorMessage = (error as Error).message;
-      console.log(errorMessage);
+      console.error(error);
     }
   };
 
@@ -81,15 +105,15 @@ export const UserAuthContextProvider = ({
   };
 
   return (
-    <userAuthContext.Provider value={contextValue}>
+    <UserAuthContext.Provider value={contextValue}>
       {children}
-    </userAuthContext.Provider>
+    </UserAuthContext.Provider>
   );
 };
 
 export const useUserAuth = () => {
-  const context = useContext(userAuthContext);
-  if (context === undefined) {
+  const context = useContext(UserAuthContext);
+  if (context === null) {
     throw new Error(
       'useUserAuth must be used within a UserAuthContextProvider'
     );

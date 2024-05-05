@@ -15,8 +15,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <UserAuthContextProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <UserAuthContextProvider>
         <Routes>
           <Route path="/" element={<Navigate to="/singup" />} />
           <Route path="/singin" element={<SingIn />} />
@@ -30,7 +30,7 @@ root.render(
             }
           />
         </Routes>
-      </BrowserRouter>
-    </UserAuthContextProvider>
+      </UserAuthContextProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

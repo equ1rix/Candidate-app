@@ -1,17 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  where,
-  query
-} from 'firebase/firestore';
+import { getFirestore, setDoc, getDoc, doc } from 'firebase/firestore';
 
-import { userAuthContext } from 'context/UserAuthContext';
+import { UserAuthContext } from 'context/UserAuthContext';
 import { auth } from 'helpers/firebaseConfig';
+import { modalBG, title } from 'helpers/styles';
 
 import Header from 'components/Header';
 import Label from 'components/Label';
@@ -19,7 +13,7 @@ import Label from 'components/Label';
 const Authpage = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const { signUp, googleAuth } = useContext(userAuthContext)!;
+  const { signUp, googleAuth } = useContext(UserAuthContext);
   const navigate = useNavigate();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,50 +27,30 @@ const Authpage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await signUp!(email, password);
+      await signUp(email, password);
       if (auth.currentUser) {
         const { displayName, email: userEmail, uid } = auth.currentUser;
         const nameToSave = displayName ? displayName : userEmail;
-
         const db = getFirestore();
-        const usersRef = collection(db, 'users');
+        const userDocRef = doc(db, 'users', uid);
+        const userDocSnapshot = await getDoc(userDocRef);
 
-        await addDoc(usersRef, {
-          name: nameToSave,
-          id: uid,
-          email: userEmail
-        });
+        if (!userDocSnapshot.exists()) {
+          await setDoc(userDocRef, {
+            id: uid,
+            name: nameToSave,
+            email: userEmail
+          });
+        }
       }
       navigate('/homepage');
     } catch (err) {
-      console.error('Error:', err);
+      alert(err);
     }
   };
 
   const handleGoogleSignIn = async () => {
     await googleAuth();
-    const currentUser = await auth.currentUser;
-    if (currentUser) {
-      const { displayName, email: userEmail, uid } = currentUser;
-      const nameToSave = displayName ? displayName : userEmail;
-
-      const db = getFirestore();
-      const usersRef = collection(db, 'users');
-      const userSnapshot = await getDocs(
-        query(usersRef, where('email', '==', userEmail))
-      );
-      if (userSnapshot.empty) {
-        await addDoc(usersRef, {
-          name: nameToSave,
-          id: uid,
-          email: userEmail
-        });
-      }
-
-      navigate('/homepage');
-    } else {
-      console.log('Error');
-    }
   };
 
   return (
@@ -84,7 +58,7 @@ const Authpage = () => {
       <Header />
       <Grid
         container
-        bgcolor="#d1e8e3"
+        bgcolor={title}
         justifyContent="center"
         alignItems="center"
         flexGrow={1}
@@ -93,7 +67,7 @@ const Authpage = () => {
           <Box
             width={450}
             borderRadius="20px"
-            bgcolor="#116466"
+            bgcolor={modalBG}
             p={4}
             boxShadow={3}
           >
