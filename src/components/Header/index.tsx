@@ -1,10 +1,11 @@
 import { AppBar, Button, Toolbar, Typography } from '@mui/material';
 
 import { mainBG } from 'helpers/styles';
-import { UserAuthContextType, useUserAuth } from 'context/UserAuthContext';
+import { UserAuthContext } from 'context/UserAuthContext';
+import { useContext } from 'react';
 
 const Header = () => {
-  const { logOut, user } = useUserAuth() as UserAuthContextType;
+  const { logOut, user } = useContext(UserAuthContext);
   const handleLogOut = async () => {
     try {
       await logOut();

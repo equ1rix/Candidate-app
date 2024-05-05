@@ -1,10 +1,9 @@
-import { ReactNode } from 'react';
+import { UserAuthContext } from 'context/UserAuthContext';
+import { ReactNode, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 
-import { useUserAuth } from 'context/UserAuthContext';
-
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const { user } = useUserAuth();
+  const { user } = useContext(UserAuthContext);
   if (!user) {
     return <Navigate to="/singup" />;
   }

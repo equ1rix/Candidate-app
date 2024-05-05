@@ -1,10 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState
-} from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -109,14 +103,4 @@ export const UserAuthContextProvider = ({
       {children}
     </UserAuthContext.Provider>
   );
-};
-
-export const useUserAuth = () => {
-  const context = useContext(UserAuthContext);
-  if (context === null) {
-    throw new Error(
-      'useUserAuth must be used within a UserAuthContextProvider'
-    );
-  }
-  return context;
 };
