@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { getFirestore, setDoc, getDoc, doc } from 'firebase/firestore';
+import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
 
 import { UserAuthContext } from 'context/UserAuthContext';
 import { auth } from 'helpers/firebaseConfig';
@@ -15,6 +16,7 @@ const Authpage = () => {
   const [password, setPassword] = useState<string>('');
   const { signUp, googleAuth } = useContext(UserAuthContext);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -104,21 +106,21 @@ const Authpage = () => {
                   variant="contained"
                   sx={{ backgroundColor: 'green' }}
                 >
-                  <Label label="SingIn" />
+                  <Label label={t('login')} />
                 </Button>
                 <Button
                   type="submit"
                   variant="contained"
                   sx={{ backgroundColor: 'darkgreen', marginLeft: '20px' }}
                 >
-                  <Label label="Sing-Up" />
+                  <Label label={t('singup')} />
                 </Button>
                 <Button
                   onClick={handleGoogleSignIn}
                   variant="contained"
                   sx={{ backgroundColor: 'green', marginLeft: '40px' }}
                 >
-                  <Label label="Sing-In google" />
+                  <Label label={`${t('login')} google`} />
                 </Button>
               </Grid>
             </Grid>

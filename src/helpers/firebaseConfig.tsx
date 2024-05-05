@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { GoogleAuthProvider, getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: process.env.APP_FIREBASE_API_KEY,
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: 'candidate-app-4cbf7.firebaseapp.com',
   databaseURL:
     'https://candidate-app-4cbf7-default-rtdb.europe-west1.firebasedatabase.app',

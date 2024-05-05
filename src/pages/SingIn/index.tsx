@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
-import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
 
 import { modalBG, title } from 'helpers/styles';
 import { UserAuthContext } from 'context/UserAuthContext';
@@ -13,6 +14,7 @@ const SingIn = () => {
   const [password, setPassword] = useState<string>('');
   const { logIn, googleAuth } = useContext(UserAuthContext);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -87,21 +89,21 @@ const SingIn = () => {
                   variant="contained"
                   sx={{ backgroundColor: 'green' }}
                 >
-                  <Label label="SingUp" />
+                  <Label label={t('singup')} />
                 </Button>
                 <Button
                   type="submit"
                   variant="contained"
                   sx={{ backgroundColor: 'darkgreen', marginLeft: '20px' }}
                 >
-                  <Label label="LogIn" />
+                  <Label label={t('login')} />
                 </Button>
                 <Button
                   onClick={handleGoogleSignIn}
                   variant="contained"
                   sx={{ backgroundColor: 'green', marginLeft: '40px' }}
                 >
-                  <Label label="Sing-In google" />
+                  <Label label={`${t('login')} google`} />
                 </Button>
               </Grid>
             </Grid>
