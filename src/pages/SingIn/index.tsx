@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
 
-import { modalBG, title } from 'helpers/styles';
 import { UserAuthContext } from 'context/UserAuthContext';
 
 import Label from 'components/Label';
@@ -43,16 +42,16 @@ const SingIn = () => {
       <Header />
       <Grid
         container
-        bgcolor={title}
+        className="bg-text-title"
         justifyContent="center"
         alignItems="center"
         flexGrow={1}
       >
         <form onSubmit={handleSubmit}>
           <Box
-            width={450}
+            maxWidth={550}
             borderRadius="20px"
-            bgcolor={modalBG}
+            className="bg-bg-modal"
             p={4}
             boxShadow={3}
           >
@@ -94,14 +93,14 @@ const SingIn = () => {
                 <Button
                   type="submit"
                   variant="contained"
-                  sx={{ backgroundColor: 'darkgreen', marginLeft: '20px' }}
+                  sx={{ backgroundColor: 'darkgreen', marginLeft: '10px' }}
                 >
                   <Label label={t('login')} />
                 </Button>
                 <Button
                   onClick={handleGoogleSignIn}
                   variant="contained"
-                  sx={{ backgroundColor: 'green', marginLeft: '40px' }}
+                  sx={{ backgroundColor: 'green', marginLeft: '20px' }}
                 >
                   <Label label={`${t('login')} google`} />
                 </Button>

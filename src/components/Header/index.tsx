@@ -1,27 +1,29 @@
 import { AppBar, Button, Toolbar, Typography } from '@mui/material';
 
-import { mainBG } from 'helpers/styles';
 import { UserAuthContext } from 'context/UserAuthContext';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Header = () => {
   const { logOut, user } = useContext(UserAuthContext);
+  const { t } = useTranslation();
+
   const handleLogOut = async () => {
     try {
       await logOut();
-    } catch (error) {
-      alert((error as Error).message);
+    } catch (err) {
+      alert(err);
     }
   };
   return (
-    <AppBar position="static" sx={{ bgcolor: mainBG }}>
+    <AppBar position="static" className="bg-bg-main">
       <Toolbar>
         <Typography variant="h6" component="div">
           Header
         </Typography>
         {user && (
           <Button color="inherit" onClick={handleLogOut}>
-            Logout
+            {t('logout')}
           </Button>
         )}
       </Toolbar>

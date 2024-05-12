@@ -39,8 +39,13 @@ export const UserAuthContextProvider = ({
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
-  const signUp = (email: string, password: string) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signUp = async (email: string, password: string) => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      handleUserAuthentication();
+    } catch (err) {
+      alert(err);
+    }
   };
 
   const logIn = (email: string, password: string) => {
@@ -52,30 +57,28 @@ export const UserAuthContextProvider = ({
   };
 
   const googleAuth = async () => {
-    try {
-      const result: UserCredential = await signInWithPopup(auth, provider);
-      const user = result.user;
-      if (user) {
-        setUser(user);
-        const { displayName, email: userEmail, uid } = user;
-        const nameToSave = displayName ? displayName : userEmail;
-        const db = getFirestore();
-        const userDocRef = doc(db, 'users', uid);
-        const userDocSnapshot = await getDoc(userDocRef);
+    const result: UserCredential = await signInWithPopup(auth, provider);
+    handleUserAuthentication(result.user);
+  };
 
-        if (!userDocSnapshot.exists()) {
-          await setDoc(userDocRef, {
-            id: uid,
-            name: nameToSave,
-            email: userEmail
-          });
-          navigate('/homepage');
-        } else {
-          navigate('/homepage');
-        }
+  const handleUserAuthentication = async (currentUser?: User | null) => {
+    const userToSet = currentUser || auth.currentUser;
+    if (userToSet) {
+      setUser(userToSet);
+      const { displayName: name, email, uid } = userToSet;
+      const nameToSave = name ? name : email;
+      const db = getFirestore();
+      const userDocRef = doc(db, 'users', uid);
+      const userDocSnapshot = await getDoc(userDocRef);
+
+      if (!userDocSnapshot.exists()) {
+        await setDoc(userDocRef, {
+          id: uid,
+          name: nameToSave,
+          email: email
+        });
       }
-    } catch (error) {
-      console.error(error);
+      navigate('/homepage');
     }
   };
 

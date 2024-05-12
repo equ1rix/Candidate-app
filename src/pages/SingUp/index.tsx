@@ -1,13 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { getFirestore, setDoc, getDoc, doc } from 'firebase/firestore';
 import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
 
 import { UserAuthContext } from 'context/UserAuthContext';
-import { auth } from 'helpers/firebaseConfig';
-import { modalBG, title } from 'helpers/styles';
-
 import Header from 'components/Header';
 import Label from 'components/Label';
 
@@ -28,27 +24,7 @@ const Authpage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      await signUp(email, password);
-      if (auth.currentUser) {
-        const { displayName, email: userEmail, uid } = auth.currentUser;
-        const nameToSave = displayName ? displayName : userEmail;
-        const db = getFirestore();
-        const userDocRef = doc(db, 'users', uid);
-        const userDocSnapshot = await getDoc(userDocRef);
-
-        if (!userDocSnapshot.exists()) {
-          await setDoc(userDocRef, {
-            id: uid,
-            name: nameToSave,
-            email: userEmail
-          });
-        }
-      }
-      navigate('/homepage');
-    } catch (err) {
-      alert(err);
-    }
+    await signUp(email, password);
   };
 
   const handleGoogleSignIn = async () => {
@@ -60,16 +36,16 @@ const Authpage = () => {
       <Header />
       <Grid
         container
-        bgcolor={title}
+        className="bg-text-title"
         justifyContent="center"
         alignItems="center"
         flexGrow={1}
       >
         <form onSubmit={handleSubmit}>
           <Box
-            width={450}
+            maxWidth={550}
             borderRadius="20px"
-            bgcolor={modalBG}
+            className="bg-bg-modal"
             p={4}
             boxShadow={3}
           >
@@ -111,14 +87,14 @@ const Authpage = () => {
                 <Button
                   type="submit"
                   variant="contained"
-                  sx={{ backgroundColor: 'darkgreen', marginLeft: '20px' }}
+                  sx={{ backgroundColor: 'darkgreen', marginLeft: '10px' }}
                 >
                   <Label label={t('singup')} />
                 </Button>
                 <Button
                   onClick={handleGoogleSignIn}
                   variant="contained"
-                  sx={{ backgroundColor: 'green', marginLeft: '40px' }}
+                  sx={{ backgroundColor: 'green', marginLeft: '20px' }}
                 >
                   <Label label={`${t('login')} google`} />
                 </Button>

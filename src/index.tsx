@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import './index.css';
+import 'tailwindcss/tailwind.css';
+
 import { UserAuthContextProvider } from 'context/UserAuthContext';
 import ProtectedRoute from 'helpers/ProtectedRoute';
 

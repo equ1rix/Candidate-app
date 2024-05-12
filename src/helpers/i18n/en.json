@@ -1,4 +1,5 @@
 {
   "singup": "Sing Up",
-  "login": "Log In"
+  "login": "Log In",
+  "logout": "Log Out"
 }
