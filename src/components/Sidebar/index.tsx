@@ -1,6 +1,19 @@
-import { Box, List, ListItem, ListItemText, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Typography
+} from '@mui/material';
 
-const Sidebar = () => (
+import { mock } from 'helpers';
+
+type SidebarProps = {
+  onClick?: () => void;
+};
+
+const Sidebar = ({ onClick = mock }: SidebarProps) => (
   <Box
     className="bg-bg-main"
     sx={{
@@ -17,6 +30,7 @@ const Sidebar = () => (
     >
       Candidates-app
     </Typography>
+    <Button onClick={onClick}>Add new candidate</Button>
     <List>
       <ListItem button>
         <ListItemText primary="First" className="text-text-title" />
