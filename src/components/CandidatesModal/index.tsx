@@ -72,7 +72,7 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
             </Grid>
             <Grid item>
               <Box display="flex" justifyContent="flex-end">
-                <Button type="submit" variant="contained" sx={{}}>
+                <Button type="submit" variant="contained">
                   <Label label="Add" />
                 </Button>
               </Box>
