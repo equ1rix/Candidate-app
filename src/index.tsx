@@ -6,6 +6,7 @@ import './index.css';
 import 'tailwindcss/tailwind.css';
 
 import { UserAuthContextProvider } from 'context/UserAuthContext';
+import { ModalContextProvider } from 'context/ModalTaskContext';
 import ProtectedRoute from 'helpers/ProtectedRoute';
 
 import Homepage from 'pages/Homepage';
@@ -18,21 +19,23 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <UserAuthContextProvider>
-        <Routes>
-          <Route path="/" element={<Navigate to="/singup" />} />
-          <Route path="/singin" element={<SingIn />} />
-          <Route path="/singup" element={<SingUp />} />
-          <Route
-            path="/homepage"
-            element={
-              <ProtectedRoute>
-                <Homepage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </UserAuthContextProvider>
+      <ModalContextProvider>
+        <UserAuthContextProvider>
+          <Routes>
+            <Route path="/" element={<Navigate to="/singup" />} />
+            <Route path="/singin" element={<SingIn />} />
+            <Route path="/singup" element={<SingUp />} />
+            <Route
+              path="/homepage"
+              element={
+                <ProtectedRoute>
+                  <Homepage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </UserAuthContextProvider>
+      </ModalContextProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
