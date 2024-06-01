@@ -22,10 +22,13 @@ const Homepage = () => {
   const getCandidatesFromFirestore = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'candidates'));
-      const candidatesData: Candidate[] = [];
-      querySnapshot.forEach((doc) => {
-        candidatesData.push({ id: doc.id, ...doc.data() } as Candidate);
-      });
+      const candidatesData = querySnapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data()
+          }) as Candidate
+      );
       setCandidates(candidatesData);
     } catch (err) {
       console.error(err);
