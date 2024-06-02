@@ -1,15 +1,44 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Box, Grid } from '@mui/material';
+import { collection, getDocs } from 'firebase/firestore';
 
 import { ModalContext } from 'context/ModalTaskContext';
+import { db } from 'helpers/firebaseConfig';
 
 import Candidates from 'components/Candidates';
 import Sidebar from 'components/Sidebar';
 import Header from 'components/Header';
 import CandidatesModal from 'components/CandidatesModal';
 
+export interface Candidate {
+  id: string;
+  name: string;
+  email: string;
+}
 const Homepage = () => {
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { openModal, closeModal, isOpenModal } = useContext(ModalContext);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+
+  const getCandidatesFromFirestore = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'candidates'));
+      const candidatesData = querySnapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data()
+          }) as Candidate
+      );
+      setCandidates(candidatesData);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    getCandidatesFromFirestore();
+  }, [isOpenModal]);
+
   return (
     <Box>
       <Grid container>
@@ -18,7 +47,7 @@ const Homepage = () => {
         </Grid>
         <Grid item xs={9} sm={10}>
           <Header />
-          <Candidates />
+          <Candidates candidatesToShow={candidates} />
           <CandidatesModal onClose={closeModal} />
         </Grid>
       </Grid>

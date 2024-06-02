@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import { createContext, ReactNode, useEffect, useState } from 'react';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -8,9 +10,8 @@ import {
   User,
   UserCredential
 } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 
+import { db } from 'helpers/firebaseConfig';
 import { auth, provider } from 'helpers/firebaseConfig';
 
 export type UserAuthContextType = {
@@ -67,7 +68,6 @@ export const UserAuthContextProvider = ({
       setUser(userToSet);
       const { displayName: name, email, uid } = userToSet;
       const nameToSave = name ? name : email;
-      const db = getFirestore();
       const userDocRef = doc(db, 'users', uid);
       const userDocSnapshot = await getDoc(userDocRef);
 

@@ -1,11 +1,11 @@
 import { useContext, useState } from 'react';
 import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
-import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import { addDoc, collection } from 'firebase/firestore';
 
+import { db } from 'helpers/firebaseConfig';
 import { mock } from 'helpers';
 import { ModalContext } from 'context/ModalTaskContext';
-import { app } from 'helpers/firebaseConfig';
 
 import CustomModal from 'components/CustomModal';
 import Label from 'components/Label';
@@ -29,7 +29,6 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const db = getFirestore(app);
     try {
       await addDoc(collection(db, 'candidates'), {
         id: uuidv4(),
