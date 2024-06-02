@@ -16,7 +16,7 @@ export interface Candidate {
   email: string;
 }
 const Homepage = () => {
-  const { openModal, closeModal, isOpenModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
 
   const getCandidatesFromFirestore = async () => {
@@ -37,7 +37,11 @@ const Homepage = () => {
 
   useEffect(() => {
     getCandidatesFromFirestore();
-  }, [isOpenModal]);
+  }, []);
+
+  const updateCandidates = () => {
+    getCandidatesFromFirestore();
+  };
 
   return (
     <Box>
@@ -46,7 +50,7 @@ const Homepage = () => {
           <Sidebar onClick={openModal} />
         </Grid>
         <Grid item xs={9} sm={10}>
-          <Header />
+          <Header refreshCandidates={updateCandidates} />
           <Candidates candidatesToShow={candidates} />
           <CandidatesModal onClose={closeModal} />
         </Grid>

@@ -82,25 +82,25 @@ const SingIn = () => {
               </Grid>
               <Grid item>
                 <Button
-                  onClick={() => {
-                    navigate('/singup');
-                  }}
-                  variant="contained"
-                  sx={{ backgroundColor: 'green' }}
-                >
-                  <Label label={t('singup')} />
-                </Button>
-                <Button
                   type="submit"
                   variant="contained"
-                  sx={{ backgroundColor: 'darkgreen', marginLeft: '10px' }}
+                  className="bg-bg-highlightButton"
                 >
                   <Label label={t('login')} />
                 </Button>
                 <Button
+                  onClick={() => {
+                    navigate('/singup');
+                  }}
+                  variant="contained"
+                  className="bg-bg-singUpButton ml-[10px]"
+                >
+                  <Label label={t('singup')} />
+                </Button>
+                <Button
                   onClick={handleGoogleSignIn}
                   variant="contained"
-                  sx={{ backgroundColor: 'green', marginLeft: '20px' }}
+                  className="bg-bg-singUpButton ml-[20px]"
                 >
                   <Label label={`${t('login')} google`} />
                 </Button>

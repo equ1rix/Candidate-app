@@ -1,5 +1,6 @@
 {
   "singup": "Sing Up",
   "login": "Log In",
-  "logout": "Log Out"
+  "logout": "Log Out",
+  "refresh": "Refresh"
 }
