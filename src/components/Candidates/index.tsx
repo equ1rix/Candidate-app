@@ -19,7 +19,7 @@ const Candidates = ({ candidatesToShow = [] }: CandidatesProps) => {
         height: { xs: 'calc(100vh - 56px)', sm: 'calc(100vh - 64px)' }
       }}
     >
-      {candidatesToShow.map((candidate) => (
+      {candidatesToShow.map((candidate, index) => (
         <Grid
           item
           key={candidate.id}
@@ -37,6 +37,7 @@ const Candidates = ({ candidatesToShow = [] }: CandidatesProps) => {
           }}
         >
           <Grid container alignItems="center">
+            <Typography sx={{ width: '15px', marginRight: '10px' }}>{index+1}</Typography>
             <Typography sx={{ width: '150px', marginRight: '10px' }}>
               {candidate.name}
             </Typography>
