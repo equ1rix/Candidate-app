@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, TextField } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { addDoc, collection } from 'firebase/firestore';
 
@@ -17,6 +17,8 @@ type CandidatesModalProps = {
 const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
 
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,13 +29,23 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
     setEmail(e.target.value);
   };
 
+  const handleChangePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumber(e.target.value)
+  }
+
+  const handleChangeFavorite = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsFavorite(e.target.checked);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await addDoc(collection(db, 'candidates'), {
         id: uuidv4(),
         name: name,
-        email: email
+        email: email,
+        phone: phoneNumber,
+        favorite: isFavorite
       });
       closeModal();
     } catch (err) {
@@ -68,6 +80,28 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
                   onChange={handleChangeEmail}
                 />
               </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <TextField
+                  label="Phone number"
+                  variant="outlined"
+                  name="Phone number"
+                  value={phoneNumber}
+                  onChange={handleChangePhoneNumber}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isFavorite}
+                    onChange={handleChangeFavorite}
+                  />
+                }
+                label="Favorite"
+              />
             </Grid>
             <Grid item>
               <Box display="flex" justifyContent="flex-end">

@@ -40,7 +40,8 @@ const Candidates = ({ candidatesToShow = [] }: CandidatesProps) => {
             <Typography sx={{ width: '150px', marginRight: '10px' }}>
               {candidate.name}
             </Typography>
-            <Typography sx={{ width: '250px' }}>{candidate.email}</Typography>
+            <Typography sx={{ width: '270px', marginRight: '50px' }}>{candidate.email}</Typography>
+            <Typography sx={{ width: '250px' }}>{candidate.phone}</Typography>
           </Grid>
         </Grid>
       ))}
