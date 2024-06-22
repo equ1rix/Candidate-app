@@ -6,6 +6,7 @@ import {
   ListItemText,
   Typography
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { mock } from 'helpers';
 
@@ -13,7 +14,10 @@ type SidebarProps = {
   onClick?: () => void;
 };
 
-const Sidebar = ({ onClick = mock }: SidebarProps) => (
+const Sidebar = ({ onClick = mock }: SidebarProps) => {
+  const { t } = useTranslation();
+
+  return(
   <Box
     className="bg-bg-main"
     sx={{
@@ -30,7 +34,7 @@ const Sidebar = ({ onClick = mock }: SidebarProps) => (
     >
       Candidates-app
     </Typography>
-    <Button onClick={onClick}>Add new candidate</Button>
+    <Button onClick={onClick}>{t("add new cadidates")}</Button>
     <List>
       <ListItem button>
         <ListItemText primary="First" className="text-text-title" />
@@ -41,5 +45,5 @@ const Sidebar = ({ onClick = mock }: SidebarProps) => (
     </List>
   </Box>
 );
-
+}
 export default Sidebar;
