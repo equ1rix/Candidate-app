@@ -9,8 +9,11 @@ module.exports = {
           title: '#D1E8E2'
         },
         bg: {
-          modal: '#116466',
-          main: '#2C3531'
+          modal: '#748D81',
+          main: '#2C3531',
+          button: '#465B51',
+          singUpButton: '#009999',
+          highlightButton: '#1D7373'
         }
       }
     }

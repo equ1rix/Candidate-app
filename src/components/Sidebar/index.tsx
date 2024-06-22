@@ -34,7 +34,13 @@ const Sidebar = ({ onClick = mock }: SidebarProps) => {
     >
       Candidates-app
     </Typography>
-    <Button onClick={onClick}>{t("add new cadidates")}</Button>
+    <Button
+      className="bg-bg-button text-text-title mx-[10px]"
+      color="inherit"
+      onClick={onClick}
+    >
+      {t("add new cadidates")}
+    </Button>
     <List>
       <ListItem button>
         <ListItemText primary="First" className="text-text-title" />

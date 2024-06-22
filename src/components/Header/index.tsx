@@ -1,10 +1,15 @@
-import { AppBar, Button, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Button, Toolbar } from '@mui/material';
 
 import { UserAuthContext } from 'context/UserAuthContext';
+import { mock } from 'helpers';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const Header = () => {
+type HeaderProps = {
+  refreshCandidates?: () => void;
+};
+
+const Header = ({ refreshCandidates = mock }: HeaderProps) => {
   const { logOut, user } = useContext(UserAuthContext);
   const { t } = useTranslation();
 
@@ -18,13 +23,30 @@ const Header = () => {
   return (
     <AppBar position="static" className="bg-bg-main">
       <Toolbar>
-        <Typography variant="h6" component="div">
-          Header
-        </Typography>
         {user && (
-          <Button color="inherit" onClick={handleLogOut}>
-            {t('logout')}
-          </Button>
+          <Box
+            sx={{
+              position: 'absolute',
+              right: 16,
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <Button
+              className="bg-bg-button mr-[15px]"
+              color="inherit"
+              onClick={refreshCandidates}
+            >
+              {t('refresh')}
+            </Button>
+            <Button
+              className="bg-bg-button"
+              color="inherit"
+              onClick={handleLogOut}
+            >
+              {t('logout')}
+            </Button>
+          </Box>
         )}
       </Toolbar>
     </AppBar>
