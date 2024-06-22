@@ -54,7 +54,13 @@ export const UserAuthContextProvider = ({
   };
 
   const logOut = () => {
-    return signOut(auth);
+    try {
+      signOut(auth);
+      setUser(null);
+      navigate('/singup'); 
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const googleAuth = async () => {

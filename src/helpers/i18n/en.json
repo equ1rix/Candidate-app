@@ -1,5 +1,7 @@
 {
   "singup": "Sing Up",
   "login": "Log In",
-  "logout": "Log Out"
+  "logout": "Log Out",
+  "add new cadidates": "Add New Candidate",
+  "add": "Add"
 }

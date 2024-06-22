@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, TextField } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { addDoc, collection } from 'firebase/firestore';
+import { useTranslation } from 'react-i18next';
 
 import { db } from 'helpers/firebaseConfig';
 import { mock } from 'helpers';
@@ -20,6 +21,7 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
+  const { t } = useTranslation();
 
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -106,7 +108,7 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
             <Grid item>
               <Box display="flex" justifyContent="flex-end">
                 <Button type="submit" variant="contained">
-                  <Label label="Add" />
+                  <Label label={t("add")} />
                 </Button>
               </Box>
             </Grid>
