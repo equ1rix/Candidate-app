@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Button, Grid, IconButton, Typography } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@material-ui/icons';
 
@@ -6,35 +5,32 @@ import { Candidate } from 'pages/Homepage';
 
 type CandidatesProps = {
   candidatesToShow: Candidate[];
+  currentPage: number;
+  setCurrentPage: (num: number) => void;
+  totalPages: number;
 };
 
-const Candidates = ({ candidatesToShow = [] }: CandidatesProps) => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemPerPage = 12;
-
-  const totalPages = Math.ceil(candidatesToShow.length / itemPerPage);
-
-  const currentCandidates = candidatesToShow.slice(
-    (currentPage - 1) * itemPerPage,
-    currentPage * itemPerPage
-  );
+const Candidates = ({
+  candidatesToShow = [],
+  currentPage = 1,
+  setCurrentPage,
+  totalPages = 1
+}: CandidatesProps) => {
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    }
-  };
-
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
+      setCurrentPage(currentPage + 1);
     }
   };
-
   return (
     <Grid
       container
@@ -48,7 +44,7 @@ const Candidates = ({ candidatesToShow = [] }: CandidatesProps) => {
         position: 'relative'
       }}
     >
-      {currentCandidates.map((candidate) => (
+      {candidatesToShow.map((candidate) => (
         <Grid
           item
           key={candidate.id}
