@@ -6,7 +6,8 @@ import {
   getDocs,
   limit,
   query,
-  startAfter
+  startAfter,
+  where
 } from 'firebase/firestore';
 
 import { ModalContext } from 'context/ModalTaskContext';
@@ -28,6 +29,7 @@ const Homepage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const itemPerPage = 12;
 
@@ -42,17 +44,27 @@ const Homepage = () => {
     }
   };
 
-  const fetchCandidates = async (page: number) => {
+  const fetchCandidates = async (page: number, search: string) => {
     try {
       const candidatesRef = collection(db, 'candidates');
       let q = query(candidatesRef, limit(itemPerPage));
-      if (page > 1) {
-        const startAtIndex = (page - 1) * itemPerPage;
-        const prevCandidatesQuery = query(candidatesRef, limit(startAtIndex));
-        const prevCandidatesSnapshot = await getDocs(prevCandidatesQuery);
-        const lastVisible =
-          prevCandidatesSnapshot.docs[prevCandidatesSnapshot.docs.length - 1];
-        q = query(candidatesRef, startAfter(lastVisible), limit(itemPerPage));
+      if (search !== '') {
+        q = query(
+          candidatesRef,
+          where('name', '>=', search),
+          where('name', '<=', search + '\uf8ff'),
+          limit(itemPerPage)
+        );
+      } else {
+        q = query(candidatesRef, limit(itemPerPage));
+        if (page > 1) {
+          const startAtIndex = (page - 1) * itemPerPage;
+          const prevCandidatesQuery = query(candidatesRef, limit(startAtIndex));
+          const prevCandidatesSnapshot = await getDocs(prevCandidatesQuery);
+          const lastVisible =
+            prevCandidatesSnapshot.docs[prevCandidatesSnapshot.docs.length - 1];
+          q = query(candidatesRef, startAfter(lastVisible), limit(itemPerPage));
+        }
       }
       const querySnapshot = await getDocs(q);
       const candidatesData = querySnapshot.docs.map(
@@ -69,8 +81,8 @@ const Homepage = () => {
   };
 
   useEffect(() => {
-    fetchCandidates(currentPage);
-  }, [currentPage]);
+    fetchCandidates(currentPage, searchQuery);
+  }, [currentPage, searchQuery]);
 
   useEffect(() => {
     fetchTotalPages();
@@ -83,7 +95,7 @@ const Homepage = () => {
           <Sidebar onClick={openModal} />
         </Grid>
         <Grid item xs={9} sm={10}>
-          <Header />
+          <Header value={searchQuery} changeValue={setSearchQuery} />
           <Candidates
             candidatesToShow={candidates}
             currentPage={currentPage}
