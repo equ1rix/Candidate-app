@@ -33,7 +33,7 @@ const Homepage = () => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const itemPerPage = 12;
+  const itemPerPage = 9;
 
   const fetchCandidates = async (page: number, search: string) => {
     try {
