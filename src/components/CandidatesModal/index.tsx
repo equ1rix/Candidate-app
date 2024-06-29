@@ -1,5 +1,13 @@
 import { useContext, useState } from 'react';
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  TextField
+} from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { addDoc, collection } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +26,7 @@ type CandidatesModalProps = {
 const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('-');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
   const { t } = useTranslation();
@@ -32,8 +40,8 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   };
 
   const handleChangePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(e.target.value)
-  }
+    setPhoneNumber(e.target.value);
+  };
 
   const handleChangeFavorite = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsFavorite(e.target.checked);
@@ -108,7 +116,7 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
             <Grid item>
               <Box display="flex" justifyContent="flex-end">
                 <Button type="submit" variant="contained">
-                  <Label label={t("add")} />
+                  <Label label={t('add')} />
                 </Button>
               </Box>
             </Grid>
