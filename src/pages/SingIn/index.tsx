@@ -7,6 +7,7 @@ import { UserAuthContext } from 'context/UserAuthContext';
 
 import Label from 'components/Label';
 import Header from 'components/Header';
+import GoogleIcon from 'components/Icons/googleIcon';
 
 const SingIn = () => {
   const [email, setEmail] = useState<string>('');
@@ -40,13 +41,7 @@ const SingIn = () => {
   return (
     <Box height="100vh" overflow="auto" display="flex" flexDirection="column">
       <Header />
-      <Grid
-        container
-        className="bg-text-title"
-        justifyContent="center"
-        alignItems="center"
-        flexGrow={1}
-      >
+      <Grid container justifyContent="center" alignItems="center" flexGrow={1}>
         <form onSubmit={handleSubmit}>
           <Box
             maxWidth={550}
@@ -84,7 +79,7 @@ const SingIn = () => {
                 <Button
                   type="submit"
                   variant="contained"
-                  className="bg-bg-highlightButton"
+                  className="bg-bg-modalButton"
                 >
                   <Label label={t('login')} />
                 </Button>
@@ -93,15 +88,18 @@ const SingIn = () => {
                     navigate('/singup');
                   }}
                   variant="contained"
-                  className="bg-bg-singUpButton ml-[10px]"
+                  className="bg-bg-modalButton ml-[10px]"
                 >
                   <Label label={t('singup')} />
                 </Button>
                 <Button
                   onClick={handleGoogleSignIn}
                   variant="contained"
-                  className="bg-bg-singUpButton ml-[20px]"
+                  className="bg-bg-modalButton ml-[20px]"
                 >
+                  <span className="mr-[10px]">
+                    <GoogleIcon />
+                  </span>
                   <Label label={`${t('login')} google`} />
                 </Button>
               </Grid>

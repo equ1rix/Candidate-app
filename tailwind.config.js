@@ -6,14 +6,14 @@ module.exports = {
     extend: {
       colors: {
         text: {
-          title: '#D1E8E2'
+          title: '#000000'
         },
         bg: {
-          modal: '#748D81',
-          main: '#2C3531',
-          button: '#465B51',
-          singUpButton: '#009999',
-          highlightButton: '#1D7373'
+          main: '#DDEBFC',
+          button: '#68AAF2',
+          modalButton: '#c2dcfb',
+          modalSecondButton: '#f0f6fe',
+          isDisable: '#D3D3D3'
         }
       }
     }
