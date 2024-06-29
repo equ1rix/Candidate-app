@@ -1,12 +1,36 @@
-import { Grid, Typography } from '@mui/material';
+import { Button, Grid, IconButton, Typography } from '@mui/material';
+import { ArrowBack, ArrowForward } from '@material-ui/icons';
 
 import { Candidate } from 'pages/Homepage';
 
 type CandidatesProps = {
   candidatesToShow: Candidate[];
+  currentPage: number;
+  setCurrentPage: (num: number) => void;
+  totalPages: number;
 };
 
-const Candidates = ({ candidatesToShow = [] }: CandidatesProps) => {
+const Candidates = ({
+  candidatesToShow = [],
+  currentPage = 1,
+  setCurrentPage,
+  totalPages = 1
+}: CandidatesProps) => {
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
   return (
     <Grid
       container
@@ -16,7 +40,8 @@ const Candidates = ({ candidatesToShow = [] }: CandidatesProps) => {
       className="bg-bg-modal"
       sx={{
         p: '10px',
-        height: { xs: 'calc(100vh - 56px)', sm: 'calc(100vh - 64px)' }
+        height: { xs: 'calc(100vh - 56px)', sm: 'calc(100vh - 64px)' },
+        position: 'relative'
       }}
     >
       {candidatesToShow.map((candidate) => (
@@ -45,6 +70,38 @@ const Candidates = ({ candidatesToShow = [] }: CandidatesProps) => {
           </Grid>
         </Grid>
       ))}
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        sx={{
+          position: 'absolute',
+          bottom: '20px',
+          width: '400px',
+          left: 'calc(50% - 200px)'
+        }}
+      >
+        <IconButton onClick={handlePrevPage} disabled={currentPage === 1}>
+          <ArrowBack />
+        </IconButton>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <Button
+            key={index}
+            color="inherit"
+            variant={currentPage === index + 1 ? 'contained' : 'outlined'}
+            onClick={() => handlePageChange(index + 1)}
+            sx={{ margin: '0px 5px' }}
+          >
+            {index + 1}
+          </Button>
+        ))}
+        <IconButton
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+        >
+          <ArrowForward />
+        </IconButton>
+      </Grid>
     </Grid>
   );
 };
