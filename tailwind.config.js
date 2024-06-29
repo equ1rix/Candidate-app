@@ -4,6 +4,9 @@ module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        oswald: ['Rubik', 'sans-serif']
+      },
       colors: {
         text: {
           title: '#D1E8E2'
