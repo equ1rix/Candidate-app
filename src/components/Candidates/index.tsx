@@ -37,7 +37,6 @@ const Candidates = ({
       direction="column"
       justifyContent="flex-start"
       alignItems="stretch"
-      className="bg-bg-modal"
       sx={{
         p: '10px',
         height: { xs: 'calc(100vh - 56px)', sm: 'calc(100vh - 64px)' },
@@ -48,7 +47,7 @@ const Candidates = ({
         <Grid
           item
           key={candidate.id}
-          className="bg-text-title"
+          className="bg-bg-modalButton"
           sx={{
             p: '15px',
             marginBottom: '10px',
@@ -57,6 +56,7 @@ const Candidates = ({
             fontSize: '20px',
             fontWeight: 'bold',
             borderRadius: '8px',
+            border: '1px solid black',
             display: 'flex',
             alignItems: 'center'
           }}
@@ -65,7 +65,9 @@ const Candidates = ({
             <Typography sx={{ width: '150px', marginRight: '10px' }}>
               {candidate.name}
             </Typography>
-            <Typography sx={{ width: '270px', marginRight: '50px' }}>{candidate.email}</Typography>
+            <Typography sx={{ width: '270px', marginRight: '50px' }}>
+              {candidate.email}
+            </Typography>
             <Typography sx={{ width: '250px' }}>{candidate.phone}</Typography>
           </Grid>
         </Grid>
@@ -87,6 +89,7 @@ const Candidates = ({
         {Array.from({ length: totalPages }, (_, index) => (
           <Button
             key={index}
+            className="bg-bg-modalSecondButton"
             color="inherit"
             variant={currentPage === index + 1 ? 'contained' : 'outlined'}
             onClick={() => handlePageChange(index + 1)}

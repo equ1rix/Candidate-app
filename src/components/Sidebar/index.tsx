@@ -2,6 +2,7 @@ import { Box, Button, Input, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { mock } from 'helpers';
+import SearchIcon from 'components/Icons/searchIcon';
 
 type SidebarProps = {
   onClick?: () => void;
@@ -37,17 +38,20 @@ const Sidebar = ({
         Candidates-app
       </Typography>
       <Button
-        className="bg-bg-button text-text-title mx-[10px]"
+        className="bg-bg-button mx-[10px] mt-[20px] mb-[35px]"
         color="inherit"
         onClick={onClick}
       >
         {t('add new cadidates')}
       </Button>
-      <Input
-        className="text-text-title mx-[30px]"
-        value={value}
-        onChange={handleChangeValue}
-      ></Input>
+      <span className="flex mx-[20px] items-center">
+        <SearchIcon />
+        <Input
+          className="text-text-title ml-[5px] flex-grow"
+          value={value}
+          onChange={handleChangeValue}
+        ></Input>
+      </span>
     </Box>
   );
 };
