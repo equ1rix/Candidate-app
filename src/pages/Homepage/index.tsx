@@ -146,7 +146,7 @@ const Homepage = () => {
           <CandidatesModal onClose={closeModal} />
           {openDrawer && (
             <CandidateDrawer
-              candidateInfo={openDrawer}
+              candidate={openDrawer}
               onClose={closeCandidateInfo}
             />
           )}

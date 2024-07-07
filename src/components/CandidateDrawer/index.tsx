@@ -1,25 +1,34 @@
 import { useState } from 'react';
-import { Box, Drawer, FormControl, Grid, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Drawer,
+  FormControl,
+  Grid,
+  TextField,
+  Typography
+} from '@mui/material';
 import { doc, updateDoc } from 'firebase/firestore';
 
 import { mock } from 'helpers';
 import { db } from 'helpers/firebaseConfig';
 import { Candidate } from 'pages/Homepage';
+import CloseIcon from 'components/Icons/closeIcon';
 
 type CandidateDrawerProps = {
   onClose: () => void;
-  candidateInfo: Candidate | null;
+  candidate: Candidate | null;
 };
 
 const CandidateDrawer = ({
   onClose = mock,
-  candidateInfo
+  candidate
 }: CandidateDrawerProps) => {
-  if (!candidateInfo) {
+  if (!candidate) {
     return null;
   }
 
-  const { id, name, email, phone } = candidateInfo;
+  const { id, name, email, phone } = candidate;
 
   const [candidateName, setCandidateName] = useState<string>(name);
   const [candidateEmail, setCandidateEmail] = useState<string>(email);
@@ -49,7 +58,7 @@ const CandidateDrawer = ({
     <>
       <Drawer
         anchor="right"
-        open={candidateInfo ? true : false}
+        open={candidate ? true : false}
         onClose={onClose}
         transitionDuration={300}
         sx={{
@@ -64,6 +73,19 @@ const CandidateDrawer = ({
         }}
       >
         <Box className="p-4">
+          <Grid
+            container
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ marginBottom: '30px' }}
+          >
+            <Typography variant="h4" fontWeight="bold" sx={{ flexGrow: 1 }}>
+              Candidate info
+            </Typography>
+            <Button onClick={onClose}>
+              <CloseIcon />
+            </Button>
+          </Grid>
           <Grid container direction="column" spacing={2}>
             <Grid item xs={12}>
               <FormControl fullWidth>
