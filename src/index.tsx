@@ -33,6 +33,14 @@ root.render(
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/homepage/:id"
+              element={
+                <ProtectedRoute>
+                  <Homepage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </UserAuthContextProvider>
       </ModalContextProvider>

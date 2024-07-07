@@ -2,19 +2,22 @@ import { Button, Grid, IconButton, Typography } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@material-ui/icons';
 
 import { Candidate } from 'pages/Homepage';
+import { mock } from 'helpers';
 
 type CandidatesProps = {
   candidatesToShow: Candidate[];
   currentPage: number;
   setCurrentPage: (num: number) => void;
   totalPages: number;
+  openDrawer: (id: string) => void;
 };
 
 const Candidates = ({
   candidatesToShow = [],
   currentPage = 1,
   setCurrentPage,
-  totalPages = 1
+  totalPages = 1,
+  openDrawer = mock
 }: CandidatesProps) => {
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -46,6 +49,7 @@ const Candidates = ({
     >
       {candidatesToShow.map((candidate) => (
         <Grid
+          onClick={() => openDrawer(candidate.id)}
           item
           key={candidate.id}
           className="bg-text-title"
@@ -65,7 +69,9 @@ const Candidates = ({
             <Typography sx={{ width: '150px', marginRight: '10px' }}>
               {candidate.name}
             </Typography>
-            <Typography sx={{ width: '270px', marginRight: '50px' }}>{candidate.email}</Typography>
+            <Typography sx={{ width: '270px', marginRight: '50px' }}>
+              {candidate.email}
+            </Typography>
             <Typography sx={{ width: '250px' }}>{candidate.phone}</Typography>
           </Grid>
         </Grid>

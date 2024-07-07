@@ -1,8 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Grid } from '@mui/material';
 import {
   collection,
+  doc,
   getCountFromServer,
+  getDoc,
   getDocs,
   limit,
   query,
@@ -17,6 +20,7 @@ import Candidates from 'components/Candidates';
 import Sidebar from 'components/Sidebar';
 import Header from 'components/Header';
 import CandidatesModal from 'components/CandidatesModal';
+import CandidateDrawer from 'components/CandidateDrawer';
 
 export interface Candidate {
   id: string;
@@ -32,8 +36,34 @@ const Homepage = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [openDrawer, setOpenDrawer] = useState<Candidate | null>(null);
+
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const itemPerPage = 12;
+
+  const getCandidateById = async (id: string): Promise<Candidate | null> => {
+    try {
+      const candidateDoc = await getDoc(doc(db, 'candidates', id));
+      if (candidateDoc.exists()) {
+        return { id: candidateDoc.id, ...candidateDoc.data() } as Candidate;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  };
+  const openCandidateInfo = (id: string) => {
+    navigate(`/homepage/${id}`);
+  };
+
+  const closeCandidateInfo = () => {
+    navigate('/homepage');
+    setOpenDrawer(null);
+  };
 
   const fetchCandidates = async (page: number, search: string) => {
     try {
@@ -80,6 +110,20 @@ const Homepage = () => {
     fetchCandidates(currentPage, searchQuery);
   }, [currentPage, searchQuery]);
 
+  useEffect(() => {
+    if (id) {
+      getCandidateById(id).then((candidate) => {
+        if (candidate) {
+          setOpenDrawer(candidate);
+        } else {
+          navigate('/homepage');
+        }
+      });
+    } else {
+      setOpenDrawer(null);
+    }
+  }, [id, navigate]);
+
   return (
     <Box>
       <Grid container>
@@ -97,8 +141,15 @@ const Homepage = () => {
             currentPage={currentPage}
             totalPages={totalPages}
             setCurrentPage={setCurrentPage}
+            openDrawer={openCandidateInfo}
           />
           <CandidatesModal onClose={closeModal} />
+          {openDrawer && (
+            <CandidateDrawer
+              candidateInfo={openDrawer}
+              onClose={closeCandidateInfo}
+            />
+          )}
         </Grid>
       </Grid>
     </Box>

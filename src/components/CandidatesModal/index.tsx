@@ -1,7 +1,15 @@
 import { useContext, useState } from 'react';
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  TextField
+} from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
-import { addDoc, collection } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
 
 import { db } from 'helpers/firebaseConfig';
@@ -32,8 +40,8 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   };
 
   const handleChangePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(e.target.value)
-  }
+    setPhoneNumber(e.target.value);
+  };
 
   const handleChangeFavorite = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsFavorite(e.target.checked);
@@ -42,8 +50,9 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await addDoc(collection(db, 'candidates'), {
-        id: uuidv4(),
+      const newId = uuidv4();
+      await setDoc(doc(db, 'candidates', newId), {
+        id: newId,
         name: name,
         email: email,
         phone: phoneNumber,
@@ -108,7 +117,7 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
             <Grid item>
               <Box display="flex" justifyContent="flex-end">
                 <Button type="submit" variant="contained">
-                  <Label label={t("add")} />
+                  <Label label={t('add')} />
                 </Button>
               </Box>
             </Grid>
