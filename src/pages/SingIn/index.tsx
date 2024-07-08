@@ -8,6 +8,7 @@ import { UserAuthContext } from 'context/UserAuthContext';
 import Label from 'components/Label';
 import Header from 'components/Header';
 import GoogleIcon from 'components/Icons/googleIcon';
+import { Link } from 'react-router-dom';
 
 const SingIn = () => {
   const [email, setEmail] = useState<string>('');
@@ -39,12 +40,13 @@ const SingIn = () => {
   };
 
   return (
-    <Box height="100vh" overflow="auto" display="flex" flexDirection="column">
+    <Box height="100vh" display="flex" flexDirection="column">
       <Header />
       <Grid container justifyContent="center" alignItems="center" flexGrow={1}>
         <form onSubmit={handleSubmit}>
           <Box
             maxWidth={550}
+            minWidth={450}
             borderRadius="20px"
             className="bg-bg-modal"
             p={4}
@@ -79,28 +81,39 @@ const SingIn = () => {
                 <Button
                   type="submit"
                   variant="contained"
-                  className="bg-bg-modalButton"
+                  className="bg-bg-modalButton w-[90px]"
+                  sx={{ textTransform: 'none' }}
                 >
-                  <Label label={t('login')} />
+                  <Label label={t('Sign In')} />
                 </Button>
-                <Button
-                  onClick={() => {
-                    navigate('/singup');
-                  }}
-                  variant="contained"
-                  className="bg-bg-modalButton ml-[10px]"
-                >
-                  <Label label={t('singup')} />
-                </Button>
+                <span className="ml-[20px]">
+                  {`${t('Go to')} `}
+                  <Link
+                    to="/singup"
+                    style={{ textDecoration: 'none', fontWeight: 'bold' }}
+                  >
+                    {t('Sign Up')}
+                  </Link>
+                </span>
+              </Grid>
+              <Grid item className="w-full">
                 <Button
                   onClick={handleGoogleSignIn}
                   variant="contained"
-                  className="bg-bg-modalButton ml-[20px]"
+                  className="bg-bg-modalButton "
+                  fullWidth
+                  sx={{
+                    display: 'flex',
+                    padding: '4px 8px',
+                    alignItems: 'left',
+                    justifyContent: 'flex-start',
+                    textTransform: 'none'
+                  }}
                 >
-                  <span className="mr-[10px]">
+                  <span className="flex mr-[10px] w-[40px] h-[40px] bg-white items-center justify-center border rounded-lg">
                     <GoogleIcon />
                   </span>
-                  <Label label={`${t('login')} google`} />
+                  <Label label={t('Login with Google')} />
                 </Button>
               </Grid>
             </Grid>

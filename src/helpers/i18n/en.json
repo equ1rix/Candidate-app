@@ -1,7 +1,9 @@
 {
-  "singup": "Sing Up",
-  "login": "Log In",
-  "logout": "Log Out",
-  "add new cadidates": "Add New Candidate",
-  "add": "Add"
+  "Sign Up": "Sign Up",
+  "Sign In": "Sign In",
+  "Log Out": "Log Out",
+  "Add New Candidate": "Add New Candidate",
+  "Add": "Add",
+  "Login with google": "Login with google",
+  "Go to": "Go to"
 }
