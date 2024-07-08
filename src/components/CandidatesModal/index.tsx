@@ -31,6 +31,8 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const { closeModal, isOpenModal } = useContext(ModalContext);
   const { t } = useTranslation();
 
+  const isButtonDisabled = !name || !email;
+
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
@@ -118,7 +120,7 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
                 <Button
                   type="submit"
                   variant="contained"
-                  disabled={!name || !email}
+                  disabled={isButtonDisabled}
                 >
                   <Label label={t('add')} />
                 </Button>
