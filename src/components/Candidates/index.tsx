@@ -26,6 +26,8 @@ const Candidates = ({
   setCurrentPage,
   totalPages = 1
 }: CandidatesProps) => {
+  const titleTable = ['Name', 'Email', 'Phone'];
+
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -54,67 +56,44 @@ const Candidates = ({
         position: 'relative'
       }}
     >
-      {candidatesToShow.map((candidate) => (
-        <Grid
-          item
-          key={candidate.id}
-          className="bg-text-title"
+      <Grid container alignItems="center">
+        <Table
+          size="small"
           sx={{
-            p: '8px',
-            marginBottom: '10px',
             width: '100%',
-            minHeight: '40px',
-            fontSize: '20px',
-            fontWeight: 'bold',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center'
+            tableLayout: 'fixed'
           }}
         >
-          <Grid container alignItems="center">
-            <Table
-              size="small"
-              sx={{
-                width: '100%',
-                tableLayout: 'fixed'
-              }}
-            >
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <Typography className="text-bg-highlightButton text-sm">
-                      Name
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography className="text-bg-highlightButton text-sm">
-                      Email
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography className="text-bg-highlightButton text-sm">
-                      Phone
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <Typography>{candidate.name}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography>{candidate.email}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography>{candidate.phone}</Typography>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </Grid>
-        </Grid>
-      ))}
+          <TableHead>
+            <TableRow>
+              {titleTable.map((el) => (
+                <TableCell key={el}>
+                  <Typography className="text-bg-highlightButton text-sm">
+                    {el}
+                  </Typography>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {candidatesToShow.map((candidate) => (
+              <TableRow key={candidate.id} className="bg-text-title">
+                {[candidate.name, candidate.email, candidate.phone].map(
+                  (data, index) => (
+                    <TableCell
+                      key={index}
+                      className="border-black border-opacity-[0.2] border-y-2 p-[12px] "
+                    >
+                      <Typography>{data}</Typography>
+                    </TableCell>
+                  )
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Grid>
+
       <Grid
         container
         justifyContent="center"
