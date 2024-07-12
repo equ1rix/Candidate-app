@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -24,41 +24,56 @@ const CandidateDrawer = ({
   onClose = mock,
   candidate
 }: CandidateDrawerProps) => {
-  if (!candidate) {
-    return null;
-  }
+  const [candidateName, setCandidateName] = useState<string>('');
+  const [candidateEmail, setCandidateEmail] = useState<string>('');
+  const [candidatePhone, setCandidatePhone] = useState<string>('');
 
-  const { id, name, email, phone } = candidate;
+  useEffect(() => {
+    if (candidate) {
+      setCandidateName(candidate.name);
+      setCandidateEmail(candidate.email);
+      setCandidatePhone(candidate.phone);
+    }
+  }, [candidate]);
 
-  const [candidateName, setCandidateName] = useState<string>(name);
-  const [candidateEmail, setCandidateEmail] = useState<string>(email);
-  const [candidatePhone, setCandidatePhone] = useState<string>(phone);
+  const identityCheck =
+    candidateName === candidate?.name &&
+    candidateEmail === candidate?.email &&
+    candidatePhone === candidate?.phone;
 
   const updateCandidateInfo = async (updatedInfo: Partial<Candidate>) => {
-    const candidateDocRef = doc(db, 'candidates', id);
-    await updateDoc(candidateDocRef, updatedInfo);
+    if (candidate) {
+      const candidateDocRef = doc(db, 'candidates', candidate.id);
+      await updateDoc(candidateDocRef, updatedInfo);
+    }
   };
 
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCandidateName(e.target.value);
-    updateCandidateInfo({ name: e.target.value });
   };
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCandidateEmail(e.target.value);
-    updateCandidateInfo({ email: e.target.value });
   };
 
   const handleChangePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCandidatePhone(e.target.value);
-    updateCandidateInfo({ phone: e.target.value });
+  };
+
+  const handlerSave = () => {
+    updateCandidateInfo({
+      name: candidateName,
+      email: candidateEmail,
+      phone: candidatePhone
+    });
+    onClose();
   };
 
   return (
     <>
       <Drawer
         anchor="right"
-        open={candidate ? true : false}
+        open={!!candidate}
         onClose={onClose}
         transitionDuration={300}
         sx={{
@@ -120,6 +135,16 @@ const CandidateDrawer = ({
                   onChange={handleChangePhoneNumber}
                 />
               </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                color="inherit"
+                className="bg-text-title"
+                disabled={identityCheck}
+                onClick={handlerSave}
+              >
+                Save
+              </Button>
             </Grid>
           </Grid>
         </Box>

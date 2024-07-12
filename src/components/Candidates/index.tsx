@@ -34,6 +34,8 @@ const Candidates = ({
       setCurrentPage(currentPage + 1);
     }
   };
+
+  const handlerOpenDrawer = (id: string) => () => openDrawer(id);
   return (
     <Grid
       container
@@ -49,7 +51,7 @@ const Candidates = ({
     >
       {candidatesToShow.map((candidate) => (
         <Grid
-          onClick={() => openDrawer(candidate.id)}
+          onClick={handlerOpenDrawer(candidate.id)}
           item
           key={candidate.id}
           className="bg-text-title"
