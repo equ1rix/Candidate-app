@@ -27,6 +27,9 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [gitHub, setGitHub] = useState<string>('');
+  const [linkedIn, setLinkedIn] = useState<string>('');
+  const [status, setStatus] = useState<boolean>(true);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
   const { t } = useTranslation();
@@ -45,6 +48,18 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
     setPhoneNumber(e.target.value);
   };
 
+  const handleChangeGitHub = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGitHub(e.target.value);
+  };
+
+  const handleChangeLinkedIn = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLinkedIn(e.target.value);
+  };
+
+  const handleChangeStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStatus(e.target.checked);
+  };
+
   const handleChangeFavorite = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsFavorite(e.target.checked);
   };
@@ -57,6 +72,9 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
         name: name,
         email: email,
         phone: phoneNumber,
+        github: gitHub,
+        linkedin: linkedIn,
+        status: status,
         favorite: isFavorite
       });
       closeModal();
@@ -104,6 +122,30 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
                 />
               </FormControl>
             </Grid>
+            <Grid item xs={12} md={4}>
+              <FormControl fullWidth>
+                <TextField
+                  label="GitHub"
+                  variant="outlined"
+                  name="GitHub"
+                  type="GitHub"
+                  value={gitHub}
+                  onChange={handleChangeGitHub}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FormControl fullWidth>
+                <TextField
+                  label="LinkedIn link"
+                  variant="outlined"
+                  name="LinkedIn"
+                  type="LinkedIn"
+                  value={linkedIn}
+                  onChange={handleChangeLinkedIn}
+                />
+              </FormControl>
+            </Grid>
             <Grid item xs={12}>
               <FormControlLabel
                 control={
@@ -113,6 +155,14 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
                   />
                 }
                 label="Favorite"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox checked={status} onChange={handleChangeStatus} />
+                }
+                label="Status"
               />
             </Grid>
             <Grid item>
