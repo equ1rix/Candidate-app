@@ -1,4 +1,14 @@
-import { Button, Grid, IconButton, Typography } from '@mui/material';
+import {
+  Button,
+  Grid,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
 import { ArrowBack, ArrowForward } from '@material-ui/icons';
 
 import { Candidate } from 'pages/Homepage';
@@ -16,6 +26,8 @@ const Candidates = ({
   setCurrentPage,
   totalPages = 1
 }: CandidatesProps) => {
+  const titleTable = ['Name', 'Email', 'Phone'];
+
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -43,35 +55,44 @@ const Candidates = ({
         position: 'relative'
       }}
     >
-      {candidatesToShow.map((candidate) => (
-        <Grid
-          item
-          key={candidate.id}
-          className="bg-bg-modalButton"
+      <Grid container alignItems="center">
+        <Table
+          size="small"
           sx={{
-            p: '15px',
-            marginBottom: '10px',
             width: '100%',
-            minHeight: '40px',
-            fontSize: '20px',
-            fontWeight: 'bold',
-            borderRadius: '8px',
-            border: '1px solid black',
-            display: 'flex',
-            alignItems: 'center'
+            tableLayout: 'fixed'
           }}
         >
-          <Grid container alignItems="center">
-            <Typography sx={{ width: '150px', marginRight: '10px' }}>
-              {candidate.name}
-            </Typography>
-            <Typography sx={{ width: '270px', marginRight: '50px' }}>
-              {candidate.email}
-            </Typography>
-            <Typography sx={{ width: '250px' }}>{candidate.phone}</Typography>
-          </Grid>
-        </Grid>
-      ))}
+          <TableHead>
+            <TableRow>
+              {titleTable.map((el) => (
+                <TableCell key={el}>
+                  <Typography className="text-bg-highlightButton text-sm">
+                    {el}
+                  </Typography>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {candidatesToShow.map((candidate) => (
+              <TableRow key={candidate.id} className="bg-bg-main">
+                {[candidate.name, candidate.email, candidate.phone].map(
+                  (data, index) => (
+                    <TableCell
+                      key={index}
+                      className="border-black border-opacity-[0.2] border-y-2 p-[12px] "
+                    >
+                      <Typography>{data}</Typography>
+                    </TableCell>
+                  )
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Grid>
+
       <Grid
         container
         justifyContent="center"

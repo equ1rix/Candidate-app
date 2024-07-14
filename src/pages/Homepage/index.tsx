@@ -10,6 +10,7 @@ import {
   where
 } from 'firebase/firestore';
 
+import { itemPerPage } from 'constans';
 import { ModalContext } from 'context/ModalTaskContext';
 import { db } from 'helpers/firebaseConfig';
 
@@ -32,8 +33,6 @@ const Homepage = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
-
-  const itemPerPage = 12;
 
   const fetchCandidates = async (page: number, search: string) => {
     try {
