@@ -121,6 +121,7 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
                   type="submit"
                   variant="contained"
                   disabled={isButtonDisabled}
+                  className="bg-bg-modalButton"
                 >
                   <Label label={t('add')} />
                 </Button>

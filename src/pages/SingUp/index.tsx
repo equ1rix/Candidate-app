@@ -1,17 +1,17 @@
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
 
 import { UserAuthContext } from 'context/UserAuthContext';
 import Header from 'components/Header';
 import Label from 'components/Label';
+import GoogleIcon from 'components/Icons/googleIcon';
+import { Link } from 'react-router-dom';
 
-const Authpage = () => {
+const SingUp = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const { signUp, googleAuth } = useContext(UserAuthContext);
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,16 +34,11 @@ const Authpage = () => {
   return (
     <Box height="100vh" overflow="auto" display="flex" flexDirection="column">
       <Header />
-      <Grid
-        container
-        className="bg-text-title"
-        justifyContent="center"
-        alignItems="center"
-        flexGrow={1}
-      >
+      <Grid container justifyContent="center" alignItems="center" flexGrow={1}>
         <form onSubmit={handleSubmit}>
           <Box
             maxWidth={550}
+            minWidth={450}
             borderRadius="20px"
             className="bg-bg-modal"
             p={4}
@@ -78,25 +73,39 @@ const Authpage = () => {
                 <Button
                   type="submit"
                   variant="contained"
-                  className="bg-bg-highlightButton"
+                  className="bg-bg-modalButton w-[90px]"
+                  sx={{ textTransform: 'none' }}
                 >
-                  <Label label={t('singup')} />
+                  <Label label={t('Sign Up')} />
                 </Button>
-                <Button
-                  onClick={() => {
-                    navigate('/singin');
-                  }}
-                  variant="contained"
-                  className="bg-bg-singUpButton  ml-[10px]"
-                >
-                  <Label label={t('login')} />
-                </Button>
+                <span className="ml-[20px]">
+                  {`${t('Go to')} `}
+                  <Link
+                    to="/singin"
+                    style={{ textDecoration: 'none', fontWeight: 'bold' }}
+                  >
+                    {t('Sign In')}
+                  </Link>
+                </span>
+              </Grid>
+              <Grid item className="w-full">
                 <Button
                   onClick={handleGoogleSignIn}
                   variant="contained"
-                  className="bg-bg-singUpButton ml-[20px]"
+                  className="bg-bg-modalButton "
+                  fullWidth
+                  sx={{
+                    display: 'flex',
+                    padding: '4px 8px',
+                    alignItems: 'left',
+                    justifyContent: 'flex-start',
+                    textTransform: 'none'
+                  }}
                 >
-                  <Label label={`${t('login')} google`} />
+                  <span className="flex mr-[10px] w-[40px] h-[40px] bg-white items-center justify-center border rounded-lg">
+                    <GoogleIcon />
+                  </span>
+                  <Label label={t('Login with Google')} />
                 </Button>
               </Grid>
             </Grid>
@@ -107,4 +116,4 @@ const Authpage = () => {
   );
 };
 
-export default Authpage;
+export default SingUp;
