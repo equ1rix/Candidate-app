@@ -14,6 +14,7 @@ import { mock } from 'helpers';
 import { db } from 'helpers/firebaseConfig';
 import { Candidate } from 'pages/Homepage';
 import CloseIcon from 'components/Icons/closeIcon';
+import { useTranslation } from 'react-i18next';
 
 type CandidateDrawerProps = {
   onClose: () => void;
@@ -27,6 +28,7 @@ const CandidateDrawer = ({
   const [candidateName, setCandidateName] = useState<string>('');
   const [candidateEmail, setCandidateEmail] = useState<string>('');
   const [candidatePhone, setCandidatePhone] = useState<string>('');
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (candidate) {
@@ -95,7 +97,7 @@ const CandidateDrawer = ({
             sx={{ marginBottom: '30px' }}
           >
             <Typography variant="h4" fontWeight="bold" sx={{ flexGrow: 1 }}>
-              Candidate info
+              {t('Candidate info')}
             </Typography>
             <Button onClick={onClose}>
               <CloseIcon />
@@ -143,7 +145,7 @@ const CandidateDrawer = ({
                 disabled={identityCheck}
                 onClick={handlerSave}
               >
-                Save
+                {t('Save')}
               </Button>
             </Grid>
           </Grid>
