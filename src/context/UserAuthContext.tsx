@@ -57,7 +57,7 @@ export const UserAuthContextProvider = ({
     try {
       signOut(auth);
       setUser(null);
-      navigate('/singup'); 
+      navigate('/singup');
     } catch (err) {
       console.error(err);
     }
@@ -81,7 +81,8 @@ export const UserAuthContextProvider = ({
         await setDoc(userDocRef, {
           id: uid,
           name: nameToSave,
-          email: email
+          email: email,
+          role: 'Recruiter'
         });
       }
       navigate('/homepage');
