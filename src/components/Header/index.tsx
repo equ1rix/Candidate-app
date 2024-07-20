@@ -3,9 +3,12 @@ import { AppBar, Box, Button, Toolbar } from '@mui/material';
 import { UserAuthContext } from 'context/UserAuthContext';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
 
 const Header = () => {
-  const { logOut, user } = useContext(UserAuthContext);
+  const user = useSelector((state: RootState) => state.user.user);
+  const { logOut } = useContext(UserAuthContext);
   const { t } = useTranslation();
 
   const handleLogOut = async () => {

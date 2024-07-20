@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useCallback, useEffect } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import {
   createUserWithEmailAndPassword,
@@ -7,15 +7,16 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
-  User,
-  UserCredential
+  UserCredential,
+  User as FirebaseUser
 } from 'firebase/auth';
 
 import { db } from 'helpers/firebaseConfig';
 import { auth, provider } from 'helpers/firebaseConfig';
+import { useDispatch } from 'react-redux';
+import { setUsers, User } from '../redux/actions';
 
 export type UserAuthContextType = {
-  user: User | null;
   signUp: (email: string, password: string) => void;
   logIn: (email: string, password: string) => void;
   logOut: () => void;
@@ -23,7 +24,6 @@ export type UserAuthContextType = {
 };
 
 export const UserAuthContext = createContext<UserAuthContextType>({
-  user: null,
   signUp: () => {},
   logIn: () => {},
   logOut: () => {},
@@ -37,27 +37,40 @@ type UserAuthContextProviderProps = {
 export const UserAuthContextProvider = ({
   children
 }: UserAuthContextProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const signUp = async (email: string, password: string) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      handleUserAuthentication();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      handleUserAuthentication(userCredential.user);
     } catch (err) {
       alert(err);
     }
   };
 
-  const logIn = (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const logIn = async (email: string, password: string) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      handleUserAuthentication(userCredential.user);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const logOut = () => {
+  const logOut = async () => {
     try {
-      signOut(auth);
-      setUser(null);
-      navigate('/singup'); 
+      await signOut(auth);
+      dispatch(setUsers(null));
+      navigate('/singup');
     } catch (err) {
       console.error(err);
     }
@@ -68,39 +81,49 @@ export const UserAuthContextProvider = ({
     handleUserAuthentication(result.user);
   };
 
-  const handleUserAuthentication = async (currentUser?: User | null) => {
-    const userToSet = currentUser || auth.currentUser;
-    if (userToSet) {
-      setUser(userToSet);
-      const { displayName: name, email, uid } = userToSet;
-      const nameToSave = name ? name : email;
-      const userDocRef = doc(db, 'users', uid);
-      const userDocSnapshot = await getDoc(userDocRef);
+  const handleUserAuthentication = useCallback(
+    async (currentUser?: FirebaseUser | null) => {
+      const userToSet = currentUser || auth.currentUser;
+      if (userToSet) {
+        const user: User = {
+          id: userToSet.uid,
+          email: userToSet.email,
+          name: userToSet.displayName,
+          role: 'user'
+        };
+        dispatch(setUsers(user));
+        const { displayName: name, email, uid } = userToSet;
+        const nameToSave = name ? name : email;
+        const userDocRef = doc(db, 'users', uid);
+        const userDocSnapshot = await getDoc(userDocRef);
 
-      if (!userDocSnapshot.exists()) {
-        await setDoc(userDocRef, {
-          id: uid,
-          name: nameToSave,
-          email: email
-        });
+        if (!userDocSnapshot.exists()) {
+          await setDoc(userDocRef, {
+            id: uid,
+            name: nameToSave,
+            email: email
+          });
+        }
+        navigate('/homepage');
       }
-      navigate('/homepage');
-    }
-  };
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        setUser(currentUser);
+        handleUserAuthentication(currentUser);
       } else {
-        setUser(null);
+        dispatch(setUsers(null));
+        navigate('/singup');
       }
     });
+
     return () => unsubscribe();
-  }, []);
+  }, [handleUserAuthentication, dispatch]);
 
   const contextValue: UserAuthContextType = {
-    user,
     signUp,
     logIn,
     logOut,

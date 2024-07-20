@@ -14,6 +14,9 @@ import ProtectedRoute from 'helpers/ProtectedRoute';
 import Homepage from 'pages/Homepage';
 import SingIn from 'pages/SingIn';
 import SingUp from 'pages/SingUp';
+import { Provider } from 'react-redux';
+import { persistor, store } from './redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -21,25 +24,29 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <ModalContextProvider>
-          <UserAuthContextProvider>
-            <Routes>
-              <Route path="/" element={<Navigate to="/singup" />} />
-              <Route path="/singin" element={<SingIn />} />
-              <Route path="/singup" element={<SingUp />} />
-              <Route
-                path="/homepage"
-                element={
-                  <ProtectedRoute>
-                    <Homepage />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </UserAuthContextProvider>
-        </ModalContextProvider>
-      </BrowserRouter>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <BrowserRouter>
+            <ModalContextProvider>
+              <UserAuthContextProvider>
+                <Routes>
+                  <Route path="/" element={<Navigate to="/singup" />} />
+                  <Route path="/singin" element={<SingIn />} />
+                  <Route path="/singup" element={<SingUp />} />
+                  <Route
+                    path="/homepage"
+                    element={
+                      <ProtectedRoute>
+                        <Homepage />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+              </UserAuthContextProvider>
+            </ModalContextProvider>
+          </BrowserRouter>
+        </PersistGate>
+      </Provider>
     </ThemeProvider>
   </React.StrictMode>
 );
