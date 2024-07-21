@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { createContext, ReactNode, useCallback, useEffect } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { useDispatch } from 'react-redux';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -11,10 +12,9 @@ import {
   User as FirebaseUser
 } from 'firebase/auth';
 
+import { setUsers, User } from '../redux/actions';
 import { db } from 'helpers/firebaseConfig';
 import { auth, provider } from 'helpers/firebaseConfig';
-import { useDispatch } from 'react-redux';
-import { setUsers, User } from '../redux/actions';
 
 export type UserAuthContextType = {
   signUp: (email: string, password: string) => void;
@@ -89,7 +89,7 @@ export const UserAuthContextProvider = ({
           id: userToSet.uid,
           email: userToSet.email,
           name: userToSet.displayName,
-          role: 'user'
+          role: 'Recruiter'
         };
         dispatch(setUsers(user));
         const { displayName: name, email, uid } = userToSet;
@@ -101,7 +101,8 @@ export const UserAuthContextProvider = ({
           await setDoc(userDocRef, {
             id: uid,
             name: nameToSave,
-            email: email
+            email: email,
+            role: 'Recruiter'
           });
         }
         navigate('/homepage');
