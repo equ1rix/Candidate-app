@@ -1,28 +1,51 @@
-import { Box, Button, Input, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import {
+  Box,
+  Button,
+  FormControl,
+  Input,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Typography
+} from '@mui/material';
 
+import { useTranslation } from 'react-i18next';
+import { useFetchPositions } from 'hooks';
 import { mock } from 'helpers';
+
 import SearchIcon from 'components/Icons/searchIcon';
 
 type SidebarProps = {
   onClick?: () => void;
   changeValue?: (value: string) => void;
   value?: string;
+  onPositionChange: (position: string) => void;
 };
 
 const Sidebar = ({
   onClick = mock,
   changeValue = mock,
-  value = ''
+  value = '',
+  onPositionChange
 }: SidebarProps) => {
+  const [position, setPosition] = useState('');
+  const { positions } = useFetchPositions();
   const { t } = useTranslation();
+
+  const handleChangePosition = (e: SelectChangeEvent) => {
+    setPosition(e.target.value);
+    onPositionChange(e.target.value);
+  };
 
   const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     changeValue(e.target.value);
   };
+
   return (
     <Box
-      className="bg-bg-main"
+      className="bg-bg-main p-[15px]"
       sx={{
         height: '100vh',
         m: 'auto',
@@ -38,13 +61,13 @@ const Sidebar = ({
         Candidates-app
       </Typography>
       <Button
-        className="bg-bg-button mx-[10px] mt-[20px] mb-[35px]"
+        className="bg-bg-button mt-[20px] mb-[35px]"
         color="inherit"
         onClick={onClick}
       >
         {t('add new cadidates')}
       </Button>
-      <span className="flex mx-[20px] items-center">
+      <span className="flex  mb-[30px] items-center">
         <SearchIcon />
         <Input
           className="text-text-title ml-[5px] flex-grow"
@@ -52,6 +75,22 @@ const Sidebar = ({
           onChange={handleChangeValue}
         ></Input>
       </span>
+      <FormControl fullWidth>
+        <InputLabel id="position-select-label">Position</InputLabel>
+        <Select
+          labelId="position-select-label"
+          id="position-select"
+          value={position}
+          label="Position"
+          onChange={handleChangePosition}
+        >
+          {positions.map((pos) => (
+            <MenuItem key={pos.id} value={pos.id}>
+              {pos.position}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </Box>
   );
 };

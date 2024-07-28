@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Button,
   Grid,
@@ -11,22 +12,21 @@ import {
 } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@material-ui/icons';
 
-import { Candidate } from 'pages/Homepage';
+import { useFetchCandidates } from 'hooks';
 
 type CandidatesProps = {
-  candidatesToShow: Candidate[];
-  currentPage: number;
-  setCurrentPage: (num: number) => void;
-  totalPages: number;
+  searchQuery: string;
+  selectedPosition: string;
 };
 
-const Candidates = ({
-  candidatesToShow = [],
-  currentPage = 1,
-  setCurrentPage,
-  totalPages = 1
-}: CandidatesProps) => {
+const Candidates = ({ searchQuery, selectedPosition }: CandidatesProps) => {
   const titleTable = ['Name', 'Email', 'Phone'];
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const { candidates, totalPages } = useFetchCandidates(
+    currentPage,
+    searchQuery,
+    selectedPosition
+  );
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -75,7 +75,7 @@ const Candidates = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {candidatesToShow.map((candidate) => (
+            {candidates.map((candidate) => (
               <TableRow key={candidate.id} className="bg-bg-main">
                 {[candidate.name, candidate.email, candidate.phone].map(
                   (data, index) => (

@@ -6,12 +6,17 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
   TextField
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { addDoc, collection } from 'firebase/firestore';
-import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
+import { useFetchPositions } from 'hooks';
 import { db } from 'helpers/firebaseConfig';
 import { mock } from 'helpers';
 import { ModalContext } from 'context/ModalTaskContext';
@@ -29,9 +34,16 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const [phoneNumber, setPhoneNumber] = useState<string>('-');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
+  const [position, setPosition] = useState('');
+
+  const { positions } = useFetchPositions();
   const { t } = useTranslation();
 
   const isButtonDisabled = !name || !email;
+
+  const handleChangePosition = (e: SelectChangeEvent) => {
+    setPosition(e.target.value);
+  };
 
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -57,7 +69,8 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
         name: name,
         email: email,
         phone: phoneNumber,
-        favorite: isFavorite
+        favorite: isFavorite,
+        position: position
       });
       closeModal();
     } catch (err) {
@@ -114,6 +127,22 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
                 }
                 label="Favorite"
               />
+            </Grid>
+            <Grid item>
+              <InputLabel id="position-select-label">Position</InputLabel>
+              <Select
+                labelId="position-select-label"
+                id="position-select"
+                value={position}
+                label="Position"
+                onChange={handleChangePosition}
+              >
+                {positions.map((pos) => (
+                  <MenuItem key={pos.id} value={pos.id}>
+                    {pos.position}
+                  </MenuItem>
+                ))}
+              </Select>
             </Grid>
             <Grid item>
               <Box display="flex" justifyContent="flex-end">
