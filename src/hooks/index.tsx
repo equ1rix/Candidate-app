@@ -32,7 +32,11 @@ export const useFetchPositions = () => {
           id: doc.id,
           position: doc.data().position
         }));
-        setPositions(positionData);
+        const posArray: Position[] = [
+          { id: '4', position: 'All position' },
+          ...positionData
+        ];
+        setPositions(posArray);
       } catch (err) {
         console.error(err);
         setError('Failed to fetch');
@@ -71,7 +75,7 @@ export const useFetchCandidates = (
 
       const constraints = [];
 
-      if (position) {
+      if (position && position !== '4') {
         constraints.push(where('position', '==', position));
       }
 
