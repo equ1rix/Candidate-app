@@ -13,6 +13,9 @@ export interface Candidate {
   name: string;
   email: string;
   phone: string;
+  github: string;
+  linkedin: string;
+  status: boolean;
   favorite: boolean;
 }
 
