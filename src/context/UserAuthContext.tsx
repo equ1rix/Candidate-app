@@ -37,7 +37,10 @@ type UserAuthContextProviderProps = {
 export const UserAuthContextProvider = ({
   children
 }: UserAuthContextProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
   const navigate = useNavigate();
 
   const signUp = async (email: string, password: string) => {
@@ -57,7 +60,7 @@ export const UserAuthContextProvider = ({
     try {
       signOut(auth);
       setUser(null);
-      navigate('/singup'); 
+      navigate('/singup');
     } catch (err) {
       console.error(err);
     }
@@ -72,6 +75,7 @@ export const UserAuthContextProvider = ({
     const userToSet = currentUser || auth.currentUser;
     if (userToSet) {
       setUser(userToSet);
+      localStorage.setItem('user', JSON.stringify(userToSet));
       const { displayName: name, email, uid } = userToSet;
       const nameToSave = name ? name : email;
       const userDocRef = doc(db, 'users', uid);

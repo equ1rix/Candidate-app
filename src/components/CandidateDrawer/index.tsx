@@ -1,8 +1,10 @@
-import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
   Checkbox,
+  Drawer,
   FormControl,
   FormControlLabel,
   Grid,
@@ -10,24 +12,28 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
-import { doc, setDoc } from 'firebase/firestore';
-import { useTranslation } from 'react-i18next';
-import { useFetchPositions } from 'hooks';
-import { db } from 'helpers/firebaseConfig';
-import { mock } from 'helpers';
-import { ModalContext } from 'context/ModalTaskContext';
+import { doc, updateDoc } from 'firebase/firestore';
 
-import CustomModal from 'components/CustomModal';
+import { useFetchPositions } from 'hooks';
+import { mock } from 'helpers';
+import { db } from 'helpers/firebaseConfig';
+import { Candidate } from 'pages/Homepage';
+
+import CloseIcon from 'components/Icons/closeIcon';
 import Label from 'components/Label';
 
-type CandidatesModalProps = {
+type CandidateDrawerProps = {
   onClose: () => void;
+  candidate: Candidate | null;
 };
 
-const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
+const CandidateDrawer = ({
+  onClose = mock,
+  candidate
+}: CandidateDrawerProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -35,7 +41,6 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const [linkedIn, setLinkedIn] = useState<string>('');
   const [status, setStatus] = useState<boolean>(true);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  const { closeModal, isOpenModal } = useContext(ModalContext);
   const [position, setPosition] = useState('');
 
   const { positions } = useFetchPositions();
@@ -58,7 +63,35 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
     { label: 'Status', value: status, func: setStatus }
   ];
 
-  const isButtonDisabled = !name || !email;
+  const isButtonDisabled =
+    name === candidate?.name &&
+    email === candidate?.email &&
+    phoneNumber === candidate?.phone &&
+    gitHub === candidate?.github &&
+    linkedIn === candidate?.linkedin &&
+    status === candidate?.status &&
+    position === candidate?.position &&
+    isFavorite === candidate?.favorite;
+
+  useEffect(() => {
+    if (candidate) {
+      setName(candidate.name || '');
+      setEmail(candidate.email || '');
+      setPhoneNumber(candidate.phone || '');
+      setGitHub(candidate.github || '');
+      setLinkedIn(candidate.linkedin || '');
+      setStatus(candidate.status ?? true);
+      setIsFavorite(candidate.favorite ?? false);
+      setPosition(candidate.position || '');
+    }
+  }, [candidate]);
+
+  const updateCandidateInfo = async (updatedInfo: Partial<Candidate>) => {
+    if (candidate) {
+      const candidateDocRef = doc(db, 'candidates', candidate.id);
+      await updateDoc(candidateDocRef, updatedInfo);
+    }
+  };
 
   const handleChangePosition = (e: SelectChangeEvent) => {
     setPosition(e.target.value);
@@ -74,30 +107,51 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
     stateHandler: React.Dispatch<React.SetStateAction<boolean>>
   ) => stateHandler(e.target.checked);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const newId = uuidv4();
-      await setDoc(doc(db, 'candidates', newId), {
-        id: newId,
-        name: name,
-        email: email,
-        phone: phoneNumber,
-        favorite: isFavorite,
-        position: position,
-        github: gitHub,
-        linkedin: linkedIn,
-        status: status
-      });
-      closeModal();
-    } catch (err) {
-      console.error(err);
-    }
+  const handlerSave = () => {
+    updateCandidateInfo({
+      name: name,
+      email: email,
+      phone: phoneNumber,
+      github: gitHub,
+      linkedin: linkedIn,
+      status: status,
+      favorite: isFavorite,
+      position: position
+    });
+    onClose();
   };
 
   return (
-    <CustomModal title="Candidates" onClose={onClose} open={isOpenModal}>
-      <form onSubmit={handleSubmit}>
+    <Drawer
+      anchor="right"
+      open={!!candidate}
+      onClose={onClose}
+      transitionDuration={300}
+      sx={{
+        '& .MuiDrawer-paper': {
+          width: {
+            xs: '100%',
+            md: '66.67%',
+            lg: '66.67%',
+            xl: '66.67%'
+          }
+        }
+      }}
+    >
+      <Box className="p-4">
+        <Grid
+          container
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ marginBottom: '30px' }}
+        >
+          <Typography variant="h4" fontWeight="bold" sx={{ flexGrow: 1 }}>
+            {t('Candidate info')}
+          </Typography>
+          <Button onClick={onClose}>
+            <CloseIcon />
+          </Button>
+        </Grid>
         <Box>
           <Grid container direction="column" spacing={2}>
             {arrayDataInput.map((el, index) => (
@@ -147,9 +201,9 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
             <Grid item>
               <Box display="flex" justifyContent="flex-end">
                 <Button
-                  type="submit"
-                  variant="contained"
+                  onClick={handlerSave}
                   disabled={isButtonDisabled}
+                  variant="contained"
                   className="bg-bg-modalButton"
                 >
                   <Label label={t('add')} />
@@ -158,9 +212,9 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
             </Grid>
           </Grid>
         </Box>
-      </form>
-    </CustomModal>
+      </Box>
+    </Drawer>
   );
 };
 
-export default CandidatesModal;
+export default CandidateDrawer;

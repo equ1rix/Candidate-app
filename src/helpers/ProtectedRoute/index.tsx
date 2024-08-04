@@ -1,11 +1,15 @@
 import { UserAuthContext } from 'context/UserAuthContext';
 import { ReactNode, useContext } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { user } = useContext(UserAuthContext);
-  if (!user) {
-    return <Navigate to="/singup" />;
+  const { pathname } = useLocation();
+
+  const hasCandidateId = pathname.includes('/homepage/');
+
+  if (!user && !hasCandidateId) {
+    return <Navigate to={`/singup`} />;
   }
   return <>{children}</>;
 };

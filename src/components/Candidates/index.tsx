@@ -13,13 +13,22 @@ import {
 import { ArrowBack, ArrowForward } from '@material-ui/icons';
 
 import { useFetchCandidates } from 'hooks';
+import { mock } from 'helpers';
+
+import { Candidate } from 'pages/Homepage';
 
 type CandidatesProps = {
+  candidatesToShow: Candidate[];
+  openDrawer: (id: string) => void;
   searchQuery: string;
   selectedPosition: string;
 };
 
-const Candidates = ({ searchQuery, selectedPosition }: CandidatesProps) => {
+const Candidates = ({
+  searchQuery,
+  selectedPosition,
+  openDrawer = mock
+}: CandidatesProps) => {
   const titleTable = ['Name', 'Email', 'Phone'];
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { candidates, totalPages } = useFetchCandidates(
@@ -27,7 +36,6 @@ const Candidates = ({ searchQuery, selectedPosition }: CandidatesProps) => {
     searchQuery,
     selectedPosition
   );
-
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -43,6 +51,8 @@ const Candidates = ({ searchQuery, selectedPosition }: CandidatesProps) => {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  const handlerOpenDrawer = (id: string) => () => openDrawer(id);
   return (
     <Grid
       container
@@ -80,6 +90,7 @@ const Candidates = ({ searchQuery, selectedPosition }: CandidatesProps) => {
                 {[candidate.name, candidate.email, candidate.phone].map(
                   (data, index) => (
                     <TableCell
+                      onClick={handlerOpenDrawer(candidate.id)}
                       key={index}
                       className="border-black border-opacity-[0.2] border-y-2 p-[12px] "
                     >
