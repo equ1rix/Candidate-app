@@ -85,7 +85,8 @@ export const UserAuthContextProvider = ({
         await setDoc(userDocRef, {
           id: uid,
           name: nameToSave,
-          email: email
+          email: email,
+          role: 'Recruiter'
         });
       }
       navigate('/homepage');
