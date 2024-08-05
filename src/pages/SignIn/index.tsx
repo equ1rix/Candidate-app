@@ -10,7 +10,7 @@ import Header from 'components/Header';
 import GoogleIcon from 'components/Icons/googleIcon';
 import { Link } from 'react-router-dom';
 
-const SingIn = () => {
+const SignIn = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const { logIn, googleAuth } = useContext(UserAuthContext);
@@ -89,7 +89,7 @@ const SingIn = () => {
                 <span className="ml-[20px]">
                   {`${t('Go to')} `}
                   <Link
-                    to="/singup"
+                    to="/signup"
                     style={{ textDecoration: 'none', fontWeight: 'bold' }}
                   >
                     {t('Sign Up')}
@@ -124,4 +124,4 @@ const SingIn = () => {
   );
 };
 
-export default SingIn;
+export default SignIn;

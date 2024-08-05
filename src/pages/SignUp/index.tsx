@@ -8,7 +8,7 @@ import Label from 'components/Label';
 import GoogleIcon from 'components/Icons/googleIcon';
 import { Link } from 'react-router-dom';
 
-const SingUp = () => {
+const SignUp = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const { signUp, googleAuth } = useContext(UserAuthContext);
@@ -81,7 +81,7 @@ const SingUp = () => {
                 <span className="ml-[20px]">
                   {`${t('Go to')} `}
                   <Link
-                    to="/singin"
+                    to="/signin"
                     style={{ textDecoration: 'none', fontWeight: 'bold' }}
                   >
                     {t('Sign In')}
@@ -116,4 +116,4 @@ const SingUp = () => {
   );
 };
 
-export default SingUp;
+export default SignUp;

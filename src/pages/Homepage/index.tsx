@@ -31,7 +31,7 @@ const Homepage = () => {
   const [selectedPosition, setSelectedPosition] = useState<string>('');
   const [openDrawer, setOpenDrawer] = useState<Candidate | null>(null);
 
-  const { id } = useParams();
+  const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
 
   const currentPage = 1;
