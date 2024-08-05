@@ -6,7 +6,7 @@ import { RootState } from 'redux/store';
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const user = useSelector((state: RootState) => state.user.user);
   if (!user) {
-    return <Navigate to="/singup" />;
+    return <Navigate to="/signup" />;
   }
   return <>{children}</>;
 };

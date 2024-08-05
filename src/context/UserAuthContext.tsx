@@ -11,8 +11,8 @@ import {
   UserCredential,
   User as FirebaseUser
 } from 'firebase/auth';
+import { signInAction, logOutAction, User } from '../redux/reduser';
 
-import { setUsers, User } from '../redux/actions';
 import { db } from 'helpers/firebaseConfig';
 import { auth, provider } from 'helpers/firebaseConfig';
 
@@ -69,8 +69,8 @@ export const UserAuthContextProvider = ({
   const logOut = async () => {
     try {
       await signOut(auth);
-      dispatch(setUsers(null));
-      navigate('/singup');
+      dispatch(logOutAction());
+      navigate('/signup');
     } catch (err) {
       console.error(err);
     }
@@ -91,7 +91,7 @@ export const UserAuthContextProvider = ({
           name: userToSet.displayName,
           role: 'Recruiter'
         };
-        dispatch(setUsers(user));
+        dispatch(signInAction(user));
         const { displayName: name, email, uid } = userToSet;
         const nameToSave = name ? name : email;
         const userDocRef = doc(db, 'users', uid);
@@ -116,8 +116,8 @@ export const UserAuthContextProvider = ({
       if (currentUser) {
         handleUserAuthentication(currentUser);
       } else {
-        dispatch(setUsers(null));
-        navigate('/singup');
+        dispatch(logOutAction());
+        navigate('/signup');
       }
     });
 
