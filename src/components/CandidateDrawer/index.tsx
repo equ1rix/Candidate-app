@@ -153,21 +153,22 @@ const CandidateDrawer = ({
         <Tab label="Info" value={0} />
         <Tab label="Comments" value={1} />
       </Tabs>
-      {tab === 0 && (
-        <Box className="p-4">
-          <Grid
-            container
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{ marginBottom: '30px' }}
-          >
-            <Typography variant="h4" fontWeight="bold" sx={{ flexGrow: 1 }}>
-              {t('Candidate info')}
-            </Typography>
-            <Button onClick={onClose}>
-              <CloseIcon />
-            </Button>
-          </Grid>
+
+      <Box className="p-4">
+        <Grid
+          container
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ marginBottom: '30px' }}
+        >
+          <Typography variant="h4" fontWeight="bold" sx={{ flexGrow: 1 }}>
+            {tab == 0 ? t('Candidate Info') : t('Comments')}
+          </Typography>
+          <Button onClick={onClose}>
+            <CloseIcon />
+          </Button>
+        </Grid>
+        {tab === 0 && (
           <Box>
             <Grid container direction="column" spacing={2}>
               {arrayDataInput.map((el, index) => (
@@ -228,9 +229,9 @@ const CandidateDrawer = ({
               </Grid>
             </Grid>
           </Box>
-        </Box>
-      )}
-      {tab === 1 && <Box className="p-4"></Box>}
+        )}
+        {tab === 1 && <Box></Box>}
+      </Box>
     </Drawer>
   );
 };
