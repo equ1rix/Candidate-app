@@ -12,6 +12,8 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Tab,
+  Tabs,
   TextField,
   Typography
 } from '@mui/material';
@@ -41,6 +43,7 @@ const CandidateDrawer = ({
   const [linkedIn, setLinkedIn] = useState<string>('');
   const [status, setStatus] = useState<boolean>(true);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [tab, setTab] = useState<number>(0);
   const [position, setPosition] = useState('');
 
   const { positions } = useFetchPositions();
@@ -93,6 +96,10 @@ const CandidateDrawer = ({
     }
   };
 
+  const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
+    setTab(newValue);
+  };
+
   const handleChangePosition = (e: SelectChangeEvent) => {
     setPosition(e.target.value);
   };
@@ -138,81 +145,92 @@ const CandidateDrawer = ({
         }
       }}
     >
-      <Box className="p-4">
-        <Grid
-          container
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ marginBottom: '30px' }}
-        >
-          <Typography variant="h4" fontWeight="bold" sx={{ flexGrow: 1 }}>
-            {t('Candidate info')}
-          </Typography>
-          <Button onClick={onClose}>
-            <CloseIcon />
-          </Button>
-        </Grid>
-        <Box>
-          <Grid container direction="column" spacing={2}>
-            {arrayDataInput.map((el, index) => (
-              <Grid key={index} item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    label={el.label}
-                    variant="outlined"
-                    name={el.name}
-                    value={el.value}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleChange(e, el.func)
-                    }
-                  />
-                </FormControl>
-              </Grid>
-            ))}
-            {arrayDataCheckbox.map((el, index) => (
-              <Grid key={index} item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={el.value}
-                      onChange={(e) => handleChangeCheckbox(e, el.func)}
-                    />
-                  }
-                  label={el.label}
-                />
-              </Grid>
-            ))}
-            <Grid item>
-              <InputLabel id="position-select-label">Position</InputLabel>
-              <Select
-                labelId="position-select-label"
-                id="position-select"
-                value={position}
-                label="Position"
-                onChange={handleChangePosition}
-              >
-                {positions.map((pos) => (
-                  <MenuItem key={pos.id} value={pos.id}>
-                    {pos.position}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item>
-              <Box display="flex" justifyContent="flex-end">
-                <Button
-                  onClick={handlerSave}
-                  disabled={isButtonDisabled}
-                  variant="contained"
-                  className="bg-bg-modalButton"
-                >
-                  <Label label={t('add')} />
-                </Button>
-              </Box>
-            </Grid>
+      <Tabs
+        value={tab}
+        onChange={handleChangeTab}
+        aria-label="basic tabs example"
+      >
+        <Tab label="Info" value={0} />
+        <Tab label="Comments" value={1} />
+      </Tabs>
+      {tab === 0 && (
+        <Box className="p-4">
+          <Grid
+            container
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ marginBottom: '30px' }}
+          >
+            <Typography variant="h4" fontWeight="bold" sx={{ flexGrow: 1 }}>
+              {t('Candidate info')}
+            </Typography>
+            <Button onClick={onClose}>
+              <CloseIcon />
+            </Button>
           </Grid>
+          <Box>
+            <Grid container direction="column" spacing={2}>
+              {arrayDataInput.map((el, index) => (
+                <Grid key={index} item xs={12}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label={el.label}
+                      variant="outlined"
+                      name={el.name}
+                      value={el.value}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleChange(e, el.func)
+                      }
+                    />
+                  </FormControl>
+                </Grid>
+              ))}
+              {arrayDataCheckbox.map((el, index) => (
+                <Grid key={index} item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={el.value}
+                        onChange={(e) => handleChangeCheckbox(e, el.func)}
+                      />
+                    }
+                    label={el.label}
+                  />
+                </Grid>
+              ))}
+              <Grid item>
+                <InputLabel id="position-select-label">Position</InputLabel>
+                <Select
+                  labelId="position-select-label"
+                  id="position-select"
+                  value={position}
+                  label="Position"
+                  onChange={handleChangePosition}
+                >
+                  {positions.map((pos) => (
+                    <MenuItem key={pos.id} value={pos.id}>
+                      {pos.position}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Grid>
+              <Grid item>
+                <Box display="flex" justifyContent="flex-end">
+                  <Button
+                    onClick={handlerSave}
+                    disabled={isButtonDisabled}
+                    variant="contained"
+                    className="bg-bg-modalButton"
+                  >
+                    <Label label={t('add')} />
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
         </Box>
-      </Box>
+      )}
+      {tab === 1 && <Box className="p-4"></Box>}
     </Drawer>
   );
 };
