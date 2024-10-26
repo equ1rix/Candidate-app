@@ -1,4 +1,11 @@
-import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  TextField,
+  Typography
+} from '@mui/material';
 import {
   collection,
   doc,
@@ -81,6 +88,13 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
   return (
     <Box>
       <Grid container direction="column" spacing={2}>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          sx={{ flexGrow: 1, padding: 3 }}
+        >
+          {t('Candidate Info')}
+        </Typography>
         <Grid item>
           <FormControl fullWidth>
             <TextField

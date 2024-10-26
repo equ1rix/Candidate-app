@@ -1,14 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import {
-  Box,
-  Button,
-  Drawer,
-  Grid,
-  Tab,
-  Tabs,
-  Typography
-} from '@mui/material';
+import { Box, Button, Drawer, Tab, Tabs } from '@mui/material';
 
 import { mock } from 'helpers';
 import { Candidate } from 'pages/Homepage';
@@ -50,29 +42,21 @@ const CandidateDrawer = ({
         }
       }}
     >
-      <Tabs
-        value={tab}
-        onChange={handleChangeTab}
-        aria-label="basic tabs example"
-      >
-        <Tab label="Info" value={0} />
-        <Tab label="Comments" value={1} />
-      </Tabs>
+      <Box className="flex justify-between">
+        <Tabs
+          value={tab}
+          onChange={handleChangeTab}
+          aria-label="basic tabs example"
+        >
+          <Tab label={t('Info')} value={0} />
+          <Tab label={t('Comments')} value={1} />
+        </Tabs>
+        <Button onClick={onClose}>
+          <CloseIcon />
+        </Button>
+      </Box>
 
       <Box className="p-4">
-        <Grid
-          container
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ marginBottom: '30px' }}
-        >
-          <Typography variant="h4" fontWeight="bold" sx={{ flexGrow: 1 }}>
-            {tab == 0 ? t('Candidate Info') : t('Comments')}
-          </Typography>
-          <Button onClick={onClose}>
-            <CloseIcon />
-          </Button>
-        </Grid>
         {tab === 0 && <CandidateInfo candidate={candidate} onClose={onClose} />}
         {tab === 1 && candidate?.id != undefined && (
           <CandidateComments candidateId={candidate?.id} />

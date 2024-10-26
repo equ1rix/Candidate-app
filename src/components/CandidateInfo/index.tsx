@@ -9,7 +9,8 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -117,6 +118,13 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
   return (
     <Box>
       <Grid container direction="column" spacing={2}>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          sx={{ flexGrow: 1, padding: 3 }}
+        >
+          {t('Candidate Info')}
+        </Typography>
         {arrayDataInput.map((el, index) => (
           <Grid key={index} item xs={12}>
             <FormControl fullWidth>
@@ -146,7 +154,7 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
           </Grid>
         ))}
         <Grid item>
-          <InputLabel id="position-select-label">Position</InputLabel>
+          <InputLabel id="position-select-label">{t('Position')}</InputLabel>
           <Select
             labelId="position-select-label"
             id="position-select"
