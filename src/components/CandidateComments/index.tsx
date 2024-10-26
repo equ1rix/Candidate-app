@@ -12,6 +12,7 @@ import {
   getDocs,
   query,
   setDoc,
+  updateDoc,
   where
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -21,6 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { db } from 'helpers/firebaseConfig';
 import { selectUserName } from '../../redux/selector';
+import Label from 'components/Label';
 
 type CandidateCommentsProps = {
   candidateId: string;
@@ -32,17 +34,54 @@ interface Comment {
   authorName: string;
   dateTime: string;
   candidateId: string;
+  visible: boolean;
 }
 
 const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
   const [comment, setComment] = useState<string>('');
   const [commentsToShow, setCommentToShow] = useState<Comment[]>([]);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editedText, setEditedText] = useState<string>('');
   const authorName = useSelector(selectUserName);
 
   const { t } = useTranslation();
 
   const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
+  };
+
+  const handleEditComment = (id: string, text: string) => {
+    setEditingCommentId(id);
+    setEditedText(text);
+  };
+
+  const handleUpdateComment = async (id: string) => {
+    if (editedText.trim()) {
+      const commentDocRef = doc(db, 'comments', id);
+      await updateDoc(commentDocRef, { text: editedText });
+      setCommentToShow((prevComments) =>
+        prevComments.map((comment) =>
+          comment.id === id ? { ...comment, text: editedText } : comment
+        )
+      );
+      setEditingCommentId(null);
+      setEditedText('');
+    }
+  };
+
+  const updateCommentVisibility = async (
+    commentId: string,
+    newVisibility: boolean
+  ) => {
+    const commentDocRef = doc(db, 'comments', commentId);
+    await updateDoc(commentDocRef, { visible: newVisibility });
+    setCommentToShow((prevComments) =>
+      prevComments.map((comment) =>
+        comment.id === commentId
+          ? { ...comment, visible: newVisibility }
+          : comment
+      )
+    );
   };
 
   const getItemsById = async (id: string) => {
@@ -66,7 +105,8 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
         authorName: authorName,
         text: comment,
         dateTime: new Date().toISOString(),
-        candidateId: candidateId
+        candidateId: candidateId,
+        visible: true
       });
       const updatedComments = await getItemsById(candidateId);
       setCommentToShow(updatedComments);
@@ -117,15 +157,45 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
         </Grid>
       </Grid>
       <Grid container className="mt-4 p-2 border rounded-lg border-gray-300">
-        {commentsToShow.map((el) => (
-          <Grid
-            className="w-[100%] min-h-[40px] bg-bg-main my-1 border rounded-lg flex items-center px-4"
-            item
-            key={el.id}
-          >
-            {el.text}
-          </Grid>
-        ))}
+        {commentsToShow.map(
+          (el) =>
+            el.visible && (
+              <Grid
+                className="w-[100%] min-h-[40px] bg-bg-main my-1 border rounded-lg flex flex-col px-4"
+                item
+                key={el.id}
+              >
+                <Box className="text-gray-400 flex justify-between">
+                  <Typography>{el.authorName}</Typography>
+                  <Typography>
+                    {el.dateTime.replace(/T|Z/g, ' ').split('.', 1)}
+                  </Typography>
+                </Box>
+                <Box className=" flex justify-between">
+                  {editingCommentId === el.id ? (
+                    <TextField
+                      className="w-full pb-4"
+                      value={editedText}
+                      onChange={(e) => setEditedText(e.target.value)}
+                      onBlur={() => handleUpdateComment(el.id)}
+                      autoFocus
+                    />
+                  ) : (
+                    <Typography
+                      onDoubleClick={() => handleEditComment(el.id, el.text)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {el.text}
+                    </Typography>
+                  )}
+
+                  <Button onClick={() => updateCommentVisibility(el.id, false)}>
+                    <Label label="X" />
+                  </Button>
+                </Box>
+              </Grid>
+            )
+        )}
       </Grid>
     </Box>
   );

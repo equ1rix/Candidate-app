@@ -16,7 +16,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useFetchPositions } from 'hooks';
+import { useFetchPositions } from 'hooks/useFetchPositions';
 import { mock } from 'helpers';
 import { db } from 'helpers/firebaseConfig';
 

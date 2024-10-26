@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@material-ui/icons';
 
-import { useFetchCandidates } from 'hooks';
+import { useFetchCandidates } from 'hooks/useFetchCandidates';
 import { mock } from 'helpers';
 
 import { Candidate } from 'pages/Homepage';
