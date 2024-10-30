@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 
 import { useTranslation } from 'react-i18next';
-import { useFetchPositions } from 'hooks/useFetchPositions';
+import { useFetchPositions } from 'hooks';
 import { mock } from 'helpers';
 
 import SearchIcon from 'components/Icons/searchIcon';
