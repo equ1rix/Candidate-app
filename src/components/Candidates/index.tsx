@@ -93,6 +93,7 @@ const Candidates = ({
                       onClick={handlerOpenDrawer(candidate.id)}
                       key={index}
                       className="border-black border-opacity-[0.2] border-y-2 p-[12px] "
+                      style={{ cursor: 'pointer' }}
                     >
                       <Typography>{data}</Typography>
                     </TableCell>

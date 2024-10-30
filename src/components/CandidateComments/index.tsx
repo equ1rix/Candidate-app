@@ -6,45 +6,34 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where
-} from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 
-import { db } from 'helpers/firebaseConfig';
 import { selectUserName } from '../../redux/selector';
+import DeleteIcon from 'components/Icons/deleteIcon';
 import Label from 'components/Label';
+import useGetComments from 'hooks/useGetComments';
+import useUpdateCommentText from 'hooks/useUpdateCommentText';
+import useUpdateCommentVisibility from 'hooks/useUpdateCommentVisibility';
+import useAddComment from 'hooks/useAddComment';
 
 type CandidateCommentsProps = {
   candidateId: string;
 };
 
-interface Comment {
-  id: string;
-  text: string;
-  authorName: string;
-  dateTime: string;
-  candidateId: string;
-  visible: boolean;
-}
-
 const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
   const [comment, setComment] = useState<string>('');
-  const [commentsToShow, setCommentToShow] = useState<Comment[]>([]);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editedText, setEditedText] = useState<string>('');
   const authorName = useSelector(selectUserName);
 
+  const comments = useGetComments(candidateId);
   const { t } = useTranslation();
+
+  const updateCommentText = useUpdateCommentText();
+  const updateCommentVisibility = useUpdateCommentVisibility();
+  const addComment = useAddComment();
 
   const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -57,73 +46,24 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
 
   const handleUpdateComment = async (id: string) => {
     if (editedText.trim()) {
-      const commentDocRef = doc(db, 'comments', id);
-      await updateDoc(commentDocRef, { text: editedText });
-      setCommentToShow((prevComments) =>
-        prevComments.map((comment) =>
-          comment.id === id ? { ...comment, text: editedText } : comment
-        )
-      );
+      await updateCommentText(id, editedText);
       setEditingCommentId(null);
       setEditedText('');
     }
   };
 
-  const updateCommentVisibility = async (
-    commentId: string,
-    newVisibility: boolean
-  ) => {
-    const commentDocRef = doc(db, 'comments', commentId);
-    await updateDoc(commentDocRef, { visible: newVisibility });
-    setCommentToShow((prevComments) =>
-      prevComments.map((comment) =>
-        comment.id === commentId
-          ? { ...comment, visible: newVisibility }
-          : comment
-      )
-    );
-  };
-
-  const getItemsById = async (id: string) => {
-    const itemsRef = collection(db, 'comments');
-    const q = query(itemsRef, where('candidateId', '==', id));
-
-    const querySnapshot = await getDocs(q);
-    const items = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data()
-    })) as Comment[];
-
-    return items;
+  const cancelEdit = () => {
+    setEditingCommentId(null);
+    setEditedText('');
   };
 
   const handleSubmit = async () => {
-    try {
-      const newId = uuidv4();
-      await setDoc(doc(db, 'comments', newId), {
-        id: newId,
-        authorName: authorName,
-        text: comment,
-        dateTime: new Date().toISOString(),
-        candidateId: candidateId,
-        visible: true
-      });
-      const updatedComments = await getItemsById(candidateId);
-      setCommentToShow(updatedComments);
+    if (comment.trim()) {
+      const newComment = await addComment(comment, authorName, candidateId);
+      comments.push(newComment);
       setComment('');
-    } catch (err) {
-      console.error(err);
     }
   };
-
-  useEffect(() => {
-    const fetchComments = async () => {
-      const items = await getItemsById(candidateId);
-      setCommentToShow(items);
-    };
-
-    fetchComments();
-  }, []);
 
   return (
     <Box>
@@ -157,7 +97,7 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
         </Grid>
       </Grid>
       <Grid container className="mt-4 p-2 border rounded-lg border-gray-300">
-        {commentsToShow.map(
+        {comments.map(
           (el) =>
             el.visible && (
               <Grid
@@ -173,25 +113,39 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
                 </Box>
                 <Box className=" flex justify-between">
                   {editingCommentId === el.id ? (
-                    <TextField
-                      className="w-full pb-4"
-                      value={editedText}
-                      onChange={(e) => setEditedText(e.target.value)}
-                      onBlur={() => handleUpdateComment(el.id)}
-                      autoFocus
-                    />
+                    <>
+                      <TextField
+                        className="w-full pb-4"
+                        value={editedText}
+                        onChange={(e) => setEditedText(e.target.value)}
+                        onBlur={() => handleUpdateComment(el.id)}
+                      />
+                      <Box className="w-[140px] flex p-2">
+                        <Button onClick={() => handleUpdateComment(el.id)}>
+                          <Label label={t('Save')} />
+                        </Button>
+                        <Button onClick={cancelEdit}>
+                          <Label label={t('Cancel')} />
+                        </Button>
+                      </Box>
+                    </>
                   ) : (
-                    <Typography
-                      onDoubleClick={() => handleEditComment(el.id, el.text)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      {el.text}
-                    </Typography>
+                    <>
+                      <Typography>{el.text}</Typography>
+                      <Box className="w-[140px] flex p-2">
+                        <Button
+                          onClick={() => handleEditComment(el.id, el.text)}
+                        >
+                          <Label label={t('Edit')} />
+                        </Button>
+                        <Button
+                          onClick={() => updateCommentVisibility(el.id, false)}
+                        >
+                          <DeleteIcon />
+                        </Button>
+                      </Box>
+                    </>
                   )}
-
-                  <Button onClick={() => updateCommentVisibility(el.id, false)}>
-                    <Label label="X" />
-                  </Button>
                 </Box>
               </Grid>
             )

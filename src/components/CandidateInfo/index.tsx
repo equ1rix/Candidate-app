@@ -13,13 +13,12 @@ import {
   Typography
 } from '@mui/material';
 import { doc, updateDoc } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useFetchPositions } from 'hooks/useFetchPositions';
 import { mock } from 'helpers';
 import { db } from 'helpers/firebaseConfig';
-
 import { Candidate } from 'pages/Homepage';
 import Label from 'components/Label';
 
@@ -29,57 +28,66 @@ type CandidateInfoProps = {
 };
 
 const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
-  const [gitHub, setGitHub] = useState<string>('');
-  const [linkedIn, setLinkedIn] = useState<string>('');
-  const [status, setStatus] = useState<boolean>(true);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  const [position, setPosition] = useState('');
+  const [candidates, setCandidates] = useState<Candidate | null>(candidate);
+
+  const handleFieldChange = (
+    field: keyof Candidate,
+    value: string | boolean
+  ) => {
+    setCandidates((prev) => (prev ? { ...prev, [field]: value } : null));
+  };
 
   const { positions } = useFetchPositions();
   const { t } = useTranslation();
 
   const arrayDataInput = [
-    { label: 'Name', name: 'name', value: name, func: setName },
-    { label: 'Email', name: 'email', value: email, func: setEmail },
-    { label: 'Phone', name: 'phone', value: phoneNumber, func: setPhoneNumber },
-    { label: 'GitHub', name: 'github', value: gitHub, func: setGitHub },
-    { label: 'LinkedIn', name: 'linkedin', value: linkedIn, func: setLinkedIn }
+    {
+      label: 'Name',
+      name: 'name',
+      value: candidates?.name,
+      func: (value: string) => handleFieldChange('name', value)
+    },
+    {
+      label: 'Email',
+      name: 'email',
+      value: candidates?.email,
+      func: (value: string) => handleFieldChange('email', value)
+    },
+    {
+      label: 'Phone',
+      name: 'phone',
+      value: candidates?.phone,
+      func: (value: string) => handleFieldChange('phone', value)
+    },
+    {
+      label: 'GitHub',
+      name: 'github',
+      value: candidates?.github,
+      func: (value: string) => handleFieldChange('github', value)
+    },
+    {
+      label: 'LinkedIn',
+      name: 'linkedin',
+      value: candidates?.linkedin,
+      func: (value: string) => handleFieldChange('linkedin', value)
+    }
   ];
 
   const arrayDataCheckbox = [
     {
       label: 'Favorite',
-      value: isFavorite,
-      func: setIsFavorite
+      value: candidates?.favorite,
+      func: (value: boolean) => handleFieldChange('favorite', value)
     },
-    { label: 'Status', value: status, func: setStatus }
+    {
+      label: 'Status',
+      value: candidates?.status,
+      func: (value: boolean) => handleFieldChange('status', value)
+    }
   ];
 
   const isButtonDisabled =
-    name === candidate?.name &&
-    email === candidate?.email &&
-    phoneNumber === candidate?.phone &&
-    gitHub === candidate?.github &&
-    linkedIn === candidate?.linkedin &&
-    status === candidate?.status &&
-    position === candidate?.position &&
-    isFavorite === candidate?.favorite;
-
-  useEffect(() => {
-    if (candidate) {
-      setName(candidate.name || '');
-      setEmail(candidate.email || '');
-      setPhoneNumber(candidate.phone || '');
-      setGitHub(candidate.github || '');
-      setLinkedIn(candidate.linkedin || '');
-      setStatus(candidate.status ?? true);
-      setIsFavorite(candidate.favorite ?? false);
-      setPosition(candidate.position || '');
-    }
-  }, [candidate]);
+    JSON.stringify(candidate) === JSON.stringify(candidates);
 
   const updateCandidateInfo = async (updatedInfo: Partial<Candidate>) => {
     if (candidate) {
@@ -89,32 +97,16 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
   };
 
   const handleChangePosition = (e: SelectChangeEvent) => {
-    setPosition(e.target.value);
+    handleFieldChange('position', e.target.value);
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    stateHandler: React.Dispatch<React.SetStateAction<string>>
-  ) => stateHandler(e.target.value);
-
-  const handleChangeCheckbox = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    stateHandler: React.Dispatch<React.SetStateAction<boolean>>
-  ) => stateHandler(e.target.checked);
-
-  const handlerSave = () => {
-    updateCandidateInfo({
-      name: name,
-      email: email,
-      phone: phoneNumber,
-      github: gitHub,
-      linkedin: linkedIn,
-      status: status,
-      favorite: isFavorite,
-      position: position
-    });
-    onClose();
+  const handleSave = () => {
+    if (candidates) {
+      updateCandidateInfo(candidates);
+      onClose();
+    }
   };
+
   return (
     <Box>
       <Grid container direction="column" spacing={2}>
@@ -133,9 +125,7 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
                 variant="outlined"
                 name={el.name}
                 value={el.value}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleChange(e, el.func)
-                }
+                onChange={(e) => el.func(e.target.value)}
               />
             </FormControl>
           </Grid>
@@ -146,7 +136,7 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
               control={
                 <Checkbox
                   checked={el.value}
-                  onChange={(e) => handleChangeCheckbox(e, el.func)}
+                  onChange={(e) => el.func(e.target.checked)}
                 />
               }
               label={el.label}
@@ -158,7 +148,7 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
           <Select
             labelId="position-select-label"
             id="position-select"
-            value={position}
+            value={candidates?.position}
             label="Position"
             onChange={handleChangePosition}
           >
@@ -172,7 +162,7 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
         <Grid item>
           <Box display="flex" justifyContent="flex-end">
             <Button
-              onClick={handlerSave}
+              onClick={handleSave}
               disabled={isButtonDisabled}
               variant="contained"
               className="bg-bg-modalButton"

@@ -23,12 +23,11 @@ export const useFetchPositions = () => {
           position: doc.data().position
         }));
         const posArray: Position[] = [
-          { id: '4', position: 'All position' },
+          { id: '0', position: 'All position' },
           ...positionData
         ];
         setPositions(posArray);
       } catch (err) {
-        console.error(err);
         setError('Failed to fetch');
       } finally {
         setLoading(false);
