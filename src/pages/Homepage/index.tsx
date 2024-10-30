@@ -4,7 +4,7 @@ import { Box, Grid } from '@mui/material';
 import { doc, getDoc } from 'firebase/firestore';
 
 import { ModalContext } from 'context/ModalTaskContext';
-import { useFetchCandidates } from 'hooks';
+import { useFetchCandidates } from 'hooks/useFetchCandidates';
 import { db } from 'helpers/firebaseConfig';
 
 import Candidates from 'components/Candidates';

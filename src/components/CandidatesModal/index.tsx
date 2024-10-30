@@ -15,7 +15,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
-import { useFetchPositions } from 'hooks';
+import { useFetchPositions } from 'hooks/useFetchPositions';
 import { db } from 'helpers/firebaseConfig';
 import { mock } from 'helpers';
 import { ModalContext } from 'context/ModalTaskContext';

@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@material-ui/icons';
 
-import { useFetchCandidates } from 'hooks';
+import { useFetchCandidates } from 'hooks/useFetchCandidates';
 import { mock } from 'helpers';
 
 import { Candidate } from 'pages/Homepage';
@@ -93,6 +93,7 @@ const Candidates = ({
                       onClick={handlerOpenDrawer(candidate.id)}
                       key={index}
                       className="border-black border-opacity-[0.2] border-y-2 p-[12px] "
+                      style={{ cursor: 'pointer' }}
                     >
                       <Typography>{data}</Typography>
                     </TableCell>
