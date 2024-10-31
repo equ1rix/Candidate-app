@@ -36,14 +36,11 @@ const Candidates = ({
     searchQuery,
     selectedPosition
   );
+
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
   };
 
   const handleNextPage = () => {
@@ -52,7 +49,12 @@ const Candidates = ({
     }
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   const handlerOpenDrawer = (id: string) => () => openDrawer(id);
+
   return (
     <Grid
       container
@@ -124,7 +126,7 @@ const Candidates = ({
             key={index}
             className="bg-bg-modalSecondButton"
             color="inherit"
-            variant={currentPage === index + 1 ? 'contained' : 'outlined'}
+            variant={currentPage === index + 1 ? 'outlined' : 'contained'}
             onClick={() => handlePageChange(index + 1)}
             sx={{ margin: '0px 5px' }}
           >
