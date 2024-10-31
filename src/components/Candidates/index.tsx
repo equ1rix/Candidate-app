@@ -22,11 +22,13 @@ type CandidatesProps = {
   openDrawer: (id: string) => void;
   searchQuery: string;
   selectedPosition: string;
+  selectedStatus: string;
 };
 
 const Candidates = ({
   searchQuery,
   selectedPosition,
+  selectedStatus,
   openDrawer = mock
 }: CandidatesProps) => {
   const titleTable = ['Name', 'Email', 'Phone'];
@@ -34,7 +36,8 @@ const Candidates = ({
   const { candidates, totalPages } = useFetchCandidates(
     currentPage,
     searchQuery,
-    selectedPosition
+    selectedPosition,
+    selectedStatus
   );
 
   const handlePrevPage = () => {

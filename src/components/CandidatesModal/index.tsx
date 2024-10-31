@@ -22,6 +22,8 @@ import { ModalContext } from 'context/ModalTaskContext';
 
 import CustomModal from 'components/CustomModal';
 import Label from 'components/Label';
+import { useFetchStatuses } from 'hooks/useFetchStatuses';
+import { useFetchCandidates } from 'hooks/useFetchCandidates';
 
 type CandidatesModalProps = {
   onClose: () => void;
@@ -33,11 +35,13 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [gitHub, setGitHub] = useState<string>('');
   const [linkedIn, setLinkedIn] = useState<string>('');
-  const [status, setStatus] = useState<boolean>(true);
+  const [status, setStatus] = useState<string>('');
+  const [position, setPosition] = useState('');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
-  const [position, setPosition] = useState('');
 
+  const { statuses } = useFetchStatuses();
+  const { refetchCandidates } = useFetchCandidates(1, '', '', '');
   const { positions } = useFetchPositions();
   const { t } = useTranslation();
 
@@ -54,14 +58,17 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
       label: 'Favorite',
       value: isFavorite,
       func: setIsFavorite
-    },
-    { label: 'Status', value: status, func: setStatus }
+    }
   ];
 
-  const isButtonDisabled = !name || !email;
+  const isButtonDisabled = !name || !email || !status || !position;
 
   const handleChangePosition = (e: SelectChangeEvent) => {
     setPosition(e.target.value);
+  };
+
+  const handleChangeStatus = (e: SelectChangeEvent) => {
+    setStatus(e.target.value);
   };
 
   const handleChange = (
@@ -90,9 +97,8 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
         status: status
       });
       closeModal();
-    } catch (err) {
-      console.error(err);
-    }
+      refetchCandidates();
+    } catch (err) {}
   };
 
   return (
@@ -140,6 +146,22 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
                 {positions.map((pos) => (
                   <MenuItem key={pos.id} value={pos.id}>
                     {pos.position}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item>
+              <InputLabel id="status-select-label">{t('Position')}</InputLabel>
+              <Select
+                labelId="status-select-label"
+                id="status-select"
+                value={status}
+                label="Position"
+                onChange={handleChangeStatus}
+              >
+                {statuses.map((el) => (
+                  <MenuItem key={el.id} value={el.id}>
+                    {el.status}
                   </MenuItem>
                 ))}
               </Select>

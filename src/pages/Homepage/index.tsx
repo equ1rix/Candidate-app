@@ -20,7 +20,7 @@ export interface Candidate {
   phone: string;
   github: string;
   linkedin: string;
-  status: boolean;
+  status: string;
   favorite: boolean;
   position: string;
 }
@@ -29,6 +29,7 @@ const Homepage = () => {
   const { openModal, closeModal } = useContext(ModalContext);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedPosition, setSelectedPosition] = useState<string>('');
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
   const [openDrawer, setOpenDrawer] = useState<Candidate | null>(null);
 
   const { id } = useParams<{ id?: string }>();
@@ -39,7 +40,8 @@ const Homepage = () => {
   const { candidates } = useFetchCandidates(
     currentPage,
     searchQuery,
-    selectedPosition
+    selectedPosition,
+    selectedStatus
   );
 
   const getCandidateById = async (id: string): Promise<Candidate | null> => {
@@ -51,7 +53,6 @@ const Homepage = () => {
         return null;
       }
     } catch (err) {
-      console.error(err);
       return null;
     }
   };
@@ -88,6 +89,7 @@ const Homepage = () => {
             value={searchQuery}
             changeValue={setSearchQuery}
             onPositionChange={setSelectedPosition}
+            onStatusChange={setSelectedStatus}
           />
         </Grid>
         <Grid item xs={9} sm={10}>
@@ -97,6 +99,7 @@ const Homepage = () => {
             selectedPosition={selectedPosition}
             candidatesToShow={candidates}
             openDrawer={openCandidateInfo}
+            selectedStatus={selectedStatus}
           />
           <CandidatesModal onClose={closeModal} />
           {openDrawer && (

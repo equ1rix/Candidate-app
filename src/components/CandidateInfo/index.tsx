@@ -21,6 +21,7 @@ import { mock } from 'helpers';
 import { db } from 'helpers/firebaseConfig';
 import { Candidate } from 'pages/Homepage';
 import Label from 'components/Label';
+import { useFetchStatuses } from 'hooks/useFetchStatuses';
 
 type CandidateInfoProps = {
   onClose: () => void;
@@ -36,7 +37,7 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
   ) => {
     setCandidates((prev) => (prev ? { ...prev, [field]: value } : null));
   };
-
+  const { statuses } = useFetchStatuses();
   const { positions } = useFetchPositions();
   const { t } = useTranslation();
 
@@ -78,11 +79,6 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
       label: 'Favorite',
       value: candidates?.favorite,
       func: (value: boolean) => handleFieldChange('favorite', value)
-    },
-    {
-      label: 'Status',
-      value: candidates?.status,
-      func: (value: boolean) => handleFieldChange('status', value)
     }
   ];
 
@@ -98,6 +94,10 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
 
   const handleChangePosition = (e: SelectChangeEvent) => {
     handleFieldChange('position', e.target.value);
+  };
+
+  const handleChangeStatus = (e: SelectChangeEvent) => {
+    handleFieldChange('status', e.target.value);
   };
 
   const handleSave = () => {
@@ -155,6 +155,22 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
             {positions.map((pos) => (
               <MenuItem key={pos.id} value={pos.id}>
                 {pos.position}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item>
+          <InputLabel id="status-select-label">{t('Position')}</InputLabel>
+          <Select
+            labelId="status-select-label"
+            id="status-select"
+            value={candidates?.status}
+            label="Position"
+            onChange={handleChangeStatus}
+          >
+            {statuses.map((el) => (
+              <MenuItem key={el.id} value={el.id}>
+                {el.status}
               </MenuItem>
             ))}
           </Select>
