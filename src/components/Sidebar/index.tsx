@@ -2,7 +2,9 @@ import { useState } from 'react';
 import {
   Box,
   Button,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   Input,
   InputLabel,
   MenuItem,
@@ -22,21 +24,29 @@ type SidebarProps = {
   changeValue?: (value: string) => void;
   value?: string;
   onPositionChange: (position: string) => void;
+  isFavoriteChange: (favorite: boolean) => void;
 };
 
 const Sidebar = ({
   onClick = mock,
   changeValue = mock,
   value = '',
-  onPositionChange
+  onPositionChange,
+  isFavoriteChange
 }: SidebarProps) => {
   const [position, setPosition] = useState('');
+  const [favorite, setFavorite] = useState<boolean>(false);
   const { positions } = useFetchPositions();
   const { t } = useTranslation();
 
   const handleChangePosition = (e: SelectChangeEvent) => {
     setPosition(e.target.value);
     onPositionChange(e.target.value);
+  };
+
+  const handleChangeFavorite = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFavorite(e.target.checked);
+    isFavoriteChange(e.target.checked);
   };
 
   const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +101,13 @@ const Sidebar = ({
           ))}
         </Select>
       </FormControl>
+
+      <FormControlLabel
+        control={
+          <Checkbox checked={favorite} onChange={handleChangeFavorite} />
+        }
+        label="Favorite"
+      />
     </Box>
   );
 };
