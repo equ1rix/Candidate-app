@@ -151,12 +151,12 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
               </Select>
             </Grid>
             <Grid item>
-              <InputLabel id="status-select-label">{t('Position')}</InputLabel>
+              <InputLabel id="status-select-label">{t('Status')}</InputLabel>
               <Select
                 labelId="status-select-label"
                 id="status-select"
                 value={status}
-                label="Position"
+                label="Status"
                 onChange={handleChangeStatus}
               >
                 {statuses.map((el) => (
