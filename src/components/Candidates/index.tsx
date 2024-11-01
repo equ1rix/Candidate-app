@@ -88,7 +88,10 @@ const Candidates = ({
           </TableHead>
           <TableBody>
             {candidates.map((candidate) => (
-              <TableRow key={candidate.id} className="bg-bg-main">
+              <TableRow
+                key={candidate.id}
+                className="bg-bg-main hover:bg-bg-button transition duration-300 ease-in-out"
+              >
                 {[candidate.name, candidate.email, candidate.phone].map(
                   (data, index) => (
                     <TableCell
