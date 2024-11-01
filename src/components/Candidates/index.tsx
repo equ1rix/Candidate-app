@@ -29,13 +29,38 @@ const Candidates = ({
   selectedPosition,
   openDrawer = mock
 }: CandidatesProps) => {
-  const titleTable = ['Name', 'Email', 'Phone'];
+  const titleTable = ['Name', 'Email', 'Position', 'Status'];
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { candidates, totalPages } = useFetchCandidates(
     currentPage,
     searchQuery,
     selectedPosition
   );
+
+  const dataChecker = (data: any) => {
+    switch (data) {
+      case 'ABilLrZKKygm3Sts1I8P':
+        return { styles: 'text-statuses-rejected', title: 'Rejected' };
+      case '2TN55EViMC2loq3lr2gQ':
+        return { styles: 'text-statuses-new', title: 'New' };
+      case 'f2mM6DIyC7YMJspJyZHh':
+        return { styles: 'text-statuses-inProgress', title: 'In Process' };
+      case 'sz10JTSFGflscN1N9GJq':
+        return { styles: 'text-statuses-hired', title: 'Hired' };
+      case '0':
+        return { styles: 'text-gray-400', title: 'Without Status' };
+      case '07Z0KhqvPQIHpUvw6Al7':
+        return { styles: '', title: 'Java' };
+      case 'Uk9ASYyoKnbZKf65jBsV':
+        return { styles: '', title: 'Python' };
+      case 'NMl0pzb6aKy4oiaRFIrM':
+        return { styles: '', title: 'JavaScript' };
+      case 'All positions':
+        return { styles: '', title: 'Without Position' };
+      default:
+        return { styles: '', title: data };
+    }
+  };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -92,18 +117,32 @@ const Candidates = ({
                 key={candidate.id}
                 className="bg-bg-main hover:bg-bg-button transition duration-300 ease-in-out"
               >
-                {[candidate.name, candidate.email, candidate.phone].map(
-                  (data, index) => (
+                {[
+                  candidate.name,
+                  candidate.email,
+                  candidate.position,
+                  candidate.status
+                ].map((data, index) => {
+                  const { styles, title } = dataChecker(data);
+                  return (
                     <TableCell
                       onClick={handlerOpenDrawer(candidate.id)}
                       key={index}
-                      className="border-black border-opacity-[0.2] border-y-2 p-[12px] "
-                      style={{ cursor: 'pointer' }}
+                      className="border-black border-opacity-[0.2] border-y-2 p-[12px]"
                     >
-                      <Typography>{data}</Typography>
+                      <Typography
+                        className={styles}
+                        sx={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {title}
+                      </Typography>
                     </TableCell>
-                  )
-                )}
+                  );
+                })}
               </TableRow>
             ))}
           </TableBody>
