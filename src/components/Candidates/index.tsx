@@ -23,13 +23,15 @@ type CandidatesProps = {
   searchQuery: string;
   selectedPosition: string;
   selectedStatus: string;
+  isFavorite: boolean;
 };
 
 const Candidates = ({
   searchQuery,
   selectedPosition,
   selectedStatus,
-  openDrawer = mock
+  openDrawer = mock,
+  isFavorite
 }: CandidatesProps) => {
   const titleTable = ['Name', 'Email', 'Phone'];
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -37,7 +39,8 @@ const Candidates = ({
     currentPage,
     searchQuery,
     selectedPosition,
-    selectedStatus
+    selectedStatus,
+    isFavorite
   );
 
   const handlePrevPage = () => {

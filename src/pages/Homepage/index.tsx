@@ -34,6 +34,7 @@ const Homepage = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedPosition, setSelectedPosition] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [openDrawer, setOpenDrawer] = useState<Candidate | null>(null);
 
   const { id } = useParams<{ id?: string }>();
@@ -45,7 +46,8 @@ const Homepage = () => {
     currentPage,
     searchQuery,
     selectedPosition,
-    selectedStatus
+    selectedStatus,
+    isFavorite
   );
 
   const getCandidateById = async (id: string): Promise<Candidate | null> => {
@@ -96,11 +98,13 @@ const Homepage = () => {
             onStatusChange={setSelectedStatus}
             statuses={statuses}
             positions={positions}
+            isFavoriteChange={setIsFavorite}
           />
         </Grid>
         <Grid item xs={9} sm={10}>
           <Header />
           <Candidates
+            isFavorite={isFavorite}
             searchQuery={searchQuery}
             selectedPosition={selectedPosition}
             candidatesToShow={candidates}
