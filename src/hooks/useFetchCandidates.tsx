@@ -15,7 +15,8 @@ import { useEffect, useState } from 'react';
 export const useFetchCandidates = (
   currentPage: number,
   searchQuery: string,
-  selectedPosition: string
+  selectedPosition: string,
+  isFavorite: boolean
 ) => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [totalPages, setTotalPages] = useState(1);
@@ -24,7 +25,8 @@ export const useFetchCandidates = (
   const fetchCandidates = async (
     page: number,
     search: string,
-    position: string
+    position: string,
+    favorite: boolean
   ) => {
     try {
       setLoading(true);
@@ -40,6 +42,12 @@ export const useFetchCandidates = (
           where('name', '<=', search + '\uf8ff')
         );
       }
+      if (favorite) {
+        constraintsForCount.push(where('favorite', '==', true));
+      }
+
+      console.log(constraintsForCount);
+
       const countQuery = query(candidatesRef, ...constraintsForCount);
       const snapshot = await getCountFromServer(countQuery);
       const totalCount = snapshot.data().count;
@@ -79,8 +87,8 @@ export const useFetchCandidates = (
   };
 
   useEffect(() => {
-    fetchCandidates(currentPage, searchQuery, selectedPosition);
-  }, [currentPage, searchQuery, selectedPosition]);
+    fetchCandidates(currentPage, searchQuery, selectedPosition, isFavorite);
+  }, [currentPage, searchQuery, selectedPosition, isFavorite]);
 
   return { candidates, totalPages, loading };
 };

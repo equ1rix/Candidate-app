@@ -22,19 +22,22 @@ type CandidatesProps = {
   openDrawer: (id: string) => void;
   searchQuery: string;
   selectedPosition: string;
+  isFavorite: boolean;
 };
 
 const Candidates = ({
   searchQuery,
   selectedPosition,
-  openDrawer = mock
+  openDrawer = mock,
+  isFavorite
 }: CandidatesProps) => {
   const titleTable = ['Name', 'Email', 'Phone'];
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { candidates, totalPages } = useFetchCandidates(
     currentPage,
     searchQuery,
-    selectedPosition
+    selectedPosition,
+    isFavorite
   );
 
   const handlePrevPage = () => {
