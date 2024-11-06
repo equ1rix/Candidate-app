@@ -12,6 +12,8 @@ import Sidebar from 'components/Sidebar';
 import Header from 'components/Header';
 import CandidatesModal from 'components/CandidatesModal';
 import CandidateDrawer from 'components/CandidateDrawer';
+import { useFetchStatuses } from 'hooks/useFetchStatuses';
+import { useFetchPositions } from 'hooks/useFetchPositions';
 
 export interface Candidate {
   id: string;
@@ -26,6 +28,8 @@ export interface Candidate {
 }
 
 const Homepage = () => {
+  const { statuses } = useFetchStatuses();
+  const { positions } = useFetchPositions();
   const { openModal, closeModal } = useContext(ModalContext);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedPosition, setSelectedPosition] = useState<string>('');
@@ -90,6 +94,8 @@ const Homepage = () => {
             changeValue={setSearchQuery}
             onPositionChange={setSelectedPosition}
             onStatusChange={setSelectedStatus}
+            statuses={statuses}
+            positions={positions}
           />
         </Grid>
         <Grid item xs={9} sm={10}>
@@ -101,10 +107,16 @@ const Homepage = () => {
             openDrawer={openCandidateInfo}
             selectedStatus={selectedStatus}
           />
-          <CandidatesModal onClose={closeModal} />
+          <CandidatesModal
+            onClose={closeModal}
+            statuses={statuses}
+            positions={positions}
+          />
           {openDrawer && (
             <CandidateDrawer
               candidate={openDrawer}
+              statuses={statuses}
+              positions={positions}
               onClose={closeCandidateInfo}
             />
           )}

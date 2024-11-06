@@ -12,11 +12,11 @@ import {
 } from '@mui/material';
 
 import { useTranslation } from 'react-i18next';
-import { useFetchPositions } from 'hooks/useFetchPositions';
+import { Position } from 'hooks/useFetchPositions';
 import { mock } from 'helpers';
 
 import SearchIcon from 'components/Icons/searchIcon';
-import { useFetchStatuses } from 'hooks/useFetchStatuses';
+import { Statuses } from 'hooks/useFetchStatuses';
 
 type SidebarProps = {
   onClick?: () => void;
@@ -24,6 +24,8 @@ type SidebarProps = {
   value?: string;
   onPositionChange: (position: string) => void;
   onStatusChange: (position: string) => void;
+  positions: Position[];
+  statuses: Statuses[];
 };
 
 const Sidebar = ({
@@ -31,12 +33,13 @@ const Sidebar = ({
   changeValue = mock,
   value = '',
   onPositionChange,
-  onStatusChange
+  onStatusChange,
+  positions,
+  statuses
 }: SidebarProps) => {
   const [position, setPosition] = useState<string>('');
   const [status, setStatus] = useState<string>('');
-  const { positions } = useFetchPositions();
-  const { statuses } = useFetchStatuses();
+
   const { t } = useTranslation();
 
   const handleChangePosition = (e: SelectChangeEvent) => {

@@ -13,13 +13,13 @@ import { Candidate } from 'pages/Homepage';
 import { useEffect, useState } from 'react';
 
 export const useFetchCandidates = (
-  currentPage: number,
-  searchQuery: string,
-  selectedPosition: string,
-  selectedStatus: string
+  currentPage = 1,
+  searchQuery = '',
+  selectedPosition = '',
+  selectedStatus = ''
 ) => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [loading, setLoading] = useState(true);
 
   const fetchCandidates = async (
@@ -35,15 +35,18 @@ export const useFetchCandidates = (
       const constraintsForCount = [];
       if (position && position !== '0') {
         constraintsForCount.push(where('position', '==', position));
+        console.log('1');
       }
       if (search) {
         constraintsForCount.push(
           where('name', '>=', search),
           where('name', '<=', search + '\uf8ff')
         );
+        console.log('2');
       }
       if (status && status !== '0') {
         constraintsForCount.push(where('status', '==', status));
+        console.log('3');
       }
 
       const countQuery = query(candidatesRef, ...constraintsForCount);
@@ -81,20 +84,14 @@ export const useFetchCandidates = (
       );
 
       setCandidates(candidatesData);
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
-
-  const refetchCandidates = () => {};
 
   useEffect(() => {
     fetchCandidates(currentPage, searchQuery, selectedPosition, selectedStatus);
-  }, [
-    currentPage,
-    searchQuery,
-    selectedPosition,
-    selectedStatus,
-    refetchCandidates
-  ]);
+  }, [currentPage, searchQuery, selectedPosition, selectedStatus]);
 
-  return { candidates, totalPages, loading, refetchCandidates };
+  return { candidates, totalPages, loading };
 };

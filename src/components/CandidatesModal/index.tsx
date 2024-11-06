@@ -15,34 +15,36 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
-import { useFetchPositions } from 'hooks/useFetchPositions';
 import { db } from 'helpers/firebaseConfig';
 import { mock } from 'helpers';
 import { ModalContext } from 'context/ModalTaskContext';
 
 import CustomModal from 'components/CustomModal';
 import Label from 'components/Label';
-import { useFetchStatuses } from 'hooks/useFetchStatuses';
-import { useFetchCandidates } from 'hooks/useFetchCandidates';
+import { Position } from 'hooks/useFetchPositions';
+import { Statuses } from 'hooks/useFetchStatuses';
 
 type CandidatesModalProps = {
   onClose: () => void;
+  positions: Position[];
+  statuses: Statuses[];
 };
 
-const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
+const CandidatesModal = ({
+  onClose = mock,
+  statuses,
+  positions
+}: CandidatesModalProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [gitHub, setGitHub] = useState<string>('');
   const [linkedIn, setLinkedIn] = useState<string>('');
   const [status, setStatus] = useState<string>('');
-  const [position, setPosition] = useState('');
+  const [position, setPosition] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
 
-  const { statuses } = useFetchStatuses();
-  const { refetchCandidates } = useFetchCandidates(1, '', '', '');
-  const { positions } = useFetchPositions();
   const { t } = useTranslation();
 
   const arrayDataInput = [
@@ -97,7 +99,6 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
         status: status
       });
       closeModal();
-      refetchCandidates();
     } catch (err) {}
   };
 

@@ -8,15 +8,21 @@ import { Candidate } from 'pages/Homepage';
 import CloseIcon from 'components/Icons/closeIcon';
 import CandidateInfo from 'components/CandidateInfo';
 import CandidateComments from 'components/CandidateComments';
+import { Position } from 'hooks/useFetchPositions';
+import { Statuses } from 'hooks/useFetchStatuses';
 
 type CandidateDrawerProps = {
   onClose: () => void;
   candidate: Candidate | null;
+  positions: Position[];
+  statuses: Statuses[];
 };
 
 const CandidateDrawer = ({
   onClose = mock,
-  candidate
+  candidate,
+  positions,
+  statuses
 }: CandidateDrawerProps) => {
   const [tab, setTab] = useState<number>(0);
   const { t } = useTranslation();
@@ -57,7 +63,14 @@ const CandidateDrawer = ({
       </Box>
 
       <Box className="p-4">
-        {tab === 0 && <CandidateInfo candidate={candidate} onClose={onClose} />}
+        {tab === 0 && (
+          <CandidateInfo
+            statuses={statuses}
+            positions={positions}
+            candidate={candidate}
+            onClose={onClose}
+          />
+        )}
         {tab === 1 && candidate?.id != undefined && (
           <CandidateComments candidateId={candidate?.id} />
         )}

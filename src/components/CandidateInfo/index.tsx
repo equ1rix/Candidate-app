@@ -16,19 +16,26 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useFetchPositions } from 'hooks/useFetchPositions';
+import { Position } from 'hooks/useFetchPositions';
 import { mock } from 'helpers';
 import { db } from 'helpers/firebaseConfig';
 import { Candidate } from 'pages/Homepage';
 import Label from 'components/Label';
-import { useFetchStatuses } from 'hooks/useFetchStatuses';
+import { Statuses } from 'hooks/useFetchStatuses';
 
 type CandidateInfoProps = {
   onClose: () => void;
   candidate: Candidate | null;
+  statuses: Statuses[];
+  positions: Position[];
 };
 
-const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
+const CandidateInfo = ({
+  onClose = mock,
+  candidate,
+  positions,
+  statuses
+}: CandidateInfoProps) => {
   const [candidates, setCandidates] = useState<Candidate | null>(candidate);
 
   const handleFieldChange = (
@@ -37,8 +44,7 @@ const CandidateInfo = ({ onClose = mock, candidate }: CandidateInfoProps) => {
   ) => {
     setCandidates((prev) => (prev ? { ...prev, [field]: value } : null));
   };
-  const { statuses } = useFetchStatuses();
-  const { positions } = useFetchPositions();
+
   const { t } = useTranslation();
 
   const arrayDataInput = [
