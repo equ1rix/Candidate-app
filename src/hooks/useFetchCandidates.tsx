@@ -35,20 +35,16 @@ export const useFetchCandidates = (
       const constraintsForCount = [];
       if (position && position !== '0') {
         constraintsForCount.push(where('position', '==', position));
-        console.log('1');
       }
       if (search) {
         constraintsForCount.push(
           where('name', '>=', search),
           where('name', '<=', search + '\uf8ff')
         );
-        console.log('2');
       }
       if (status && status !== '0') {
         constraintsForCount.push(where('status', '==', status));
-        console.log('3');
       }
-
       const countQuery = query(candidatesRef, ...constraintsForCount);
       const snapshot = await getCountFromServer(countQuery);
       const totalCount = snapshot.data().count;
@@ -84,9 +80,7 @@ export const useFetchCandidates = (
       );
 
       setCandidates(candidatesData);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   useEffect(() => {
