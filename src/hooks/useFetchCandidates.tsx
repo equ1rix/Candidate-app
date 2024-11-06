@@ -20,7 +20,6 @@ export const useFetchCandidates = (
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const fetchCandidates = async (
     page: number,
@@ -30,34 +29,40 @@ export const useFetchCandidates = (
     try {
       setLoading(true);
       const candidatesRef = collection(db, 'candidates');
-      const snapshot = await getCountFromServer(candidatesRef);
-      const totalCount = snapshot.data().count;
-      setTotalPages(Math.ceil(totalCount / itemPerPage));
 
-      const constraints = [];
-
-      if (position && position !== '4') {
-        constraints.push(where('position', '==', position));
+      const constraintsForCount = [];
+      if (position && position !== '0') {
+        constraintsForCount.push(where('position', '==', position));
       }
-
       if (search) {
-        constraints.push(
+        constraintsForCount.push(
           where('name', '>=', search),
           where('name', '<=', search + '\uf8ff')
         );
       }
+      const countQuery = query(candidatesRef, ...constraintsForCount);
+      const snapshot = await getCountFromServer(countQuery);
+      const totalCount = snapshot.data().count;
+      setTotalPages(Math.ceil(totalCount / itemPerPage));
 
-      constraints.push(limit(itemPerPage));
+      let q = query(candidatesRef, ...constraintsForCount, limit(itemPerPage));
 
-      let q = query(candidatesRef, ...constraints);
-
-      if (!search && !position && page > 1) {
-        const startAtIndex = (page - 1) * itemPerPage;
-        const prevCandidatesQuery = query(candidatesRef, limit(startAtIndex));
+      if (page > 1) {
+        const prevCandidatesQuery = query(
+          candidatesRef,
+          ...constraintsForCount,
+          limit((page - 1) * itemPerPage)
+        );
         const prevCandidatesSnapshot = await getDocs(prevCandidatesQuery);
         const lastVisible =
           prevCandidatesSnapshot.docs[prevCandidatesSnapshot.docs.length - 1];
-        q = query(candidatesRef, startAfter(lastVisible), limit(itemPerPage));
+
+        q = query(
+          candidatesRef,
+          ...constraintsForCount,
+          startAfter(lastVisible),
+          limit(itemPerPage)
+        );
       }
 
       const querySnapshot = await getDocs(q);
@@ -70,17 +75,12 @@ export const useFetchCandidates = (
       );
 
       setCandidates(candidatesData);
-    } catch (err) {
-      console.error(err);
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) {}
   };
 
   useEffect(() => {
     fetchCandidates(currentPage, searchQuery, selectedPosition);
   }, [currentPage, searchQuery, selectedPosition]);
 
-  return { candidates, totalPages, loading, error };
+  return { candidates, totalPages, loading };
 };
