@@ -62,9 +62,7 @@ export const UserAuthContextProvider = ({
         password
       );
       handleUserAuthentication(userCredential.user);
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) {}
   };
 
   const logOut = async () => {
@@ -72,9 +70,7 @@ export const UserAuthContextProvider = ({
       await signOut(auth);
       dispatch(logOutAction());
       navigate('/signup');
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) {}
   };
 
   const googleAuth = async () => {

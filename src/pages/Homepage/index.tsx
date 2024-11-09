@@ -25,6 +25,7 @@ export interface Candidate {
   status: string;
   favorite: boolean;
   position: string;
+  cvUrl?: string;
 }
 
 const Homepage = () => {

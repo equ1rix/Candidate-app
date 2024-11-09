@@ -63,7 +63,7 @@ const CandidatesModal = ({
     }
   ];
 
-  const isButtonDisabled = !name || !email || !status || !position;
+  const isButtonDisabled = !name || !email || !position || !status;
 
   const handleChangePosition = (e: SelectChangeEvent) => {
     setPosition(e.target.value);
@@ -85,6 +85,7 @@ const CandidatesModal = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
       const newId = uuidv4();
       await setDoc(doc(db, 'candidates', newId), {

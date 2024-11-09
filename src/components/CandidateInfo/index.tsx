@@ -22,6 +22,7 @@ import { db } from 'helpers/firebaseConfig';
 import { Candidate } from 'pages/Homepage';
 import Label from 'components/Label';
 import { Statuses } from 'hooks/useFetchStatuses';
+import useUploadCV from 'hooks/useUploadCV';
 
 type CandidateInfoProps = {
   onClose: () => void;
@@ -37,7 +38,9 @@ const CandidateInfo = ({
   statuses
 }: CandidateInfoProps) => {
   const [candidates, setCandidates] = useState<Candidate | null>(candidate);
-
+  const { uploadCV, uploading, error, cvUrl } = useUploadCV({
+    candidateId: candidate?.id || ''
+  });
   const handleFieldChange = (
     field: keyof Candidate,
     value: string | boolean
@@ -113,6 +116,11 @@ const CandidateInfo = ({
     }
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      uploadCV(event.target.files[0]);
+    }
+  };
   return (
     <Box>
       <Grid container direction="column" spacing={2}>
@@ -180,6 +188,23 @@ const CandidateInfo = ({
               </MenuItem>
             ))}
           </Select>
+        </Grid>
+        <Grid item>
+          <input type="file" onChange={handleFileChange} />
+          {uploading && <Typography variant="body2">Uploading...</Typography>}
+          {error && <Typography color="error">Error</Typography>}
+          {cvUrl && (
+            <Typography className="mt-2">
+              <a
+                href={cvUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold"
+              >
+                Download CV
+              </a>
+            </Typography>
+          )}
         </Grid>
         <Grid item>
           <Box display="flex" justifyContent="flex-end">
