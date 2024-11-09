@@ -23,7 +23,7 @@ export const useFetchPositions = () => {
           position: doc.data().position
         }));
         const posArray: Position[] = [
-          { id: '0', position: 'All position' },
+          { id: 'All position', position: 'All position' },
           ...positionData
         ];
         setPositions(posArray);

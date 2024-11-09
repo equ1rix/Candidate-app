@@ -21,7 +21,7 @@ export const useFetchStatuses = () => {
           status: doc.data().status
         }));
         const posArray: Statuses[] = [
-          { id: '0', status: 'All statuses' },
+          { id: 'All statuses', status: 'All statuses' },
           ...statusData
         ];
         setStatuses(posArray);

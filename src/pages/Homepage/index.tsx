@@ -105,6 +105,8 @@ const Homepage = () => {
         <Grid item xs={9} sm={10}>
           <Header />
           <Candidates
+            positions={positions}
+            statuses={statuses}
             isFavorite={isFavorite}
             searchQuery={searchQuery}
             selectedPosition={selectedPosition}

@@ -16,6 +16,8 @@ import { useFetchCandidates } from 'hooks/useFetchCandidates';
 import { mock } from 'helpers';
 
 import { Candidate } from 'pages/Homepage';
+import { Position } from 'hooks/useFetchPositions';
+import { Statuses } from 'hooks/useFetchStatuses';
 
 type CandidatesProps = {
   candidatesToShow: Candidate[];
@@ -24,6 +26,8 @@ type CandidatesProps = {
   selectedPosition: string;
   selectedStatus: string;
   isFavorite: boolean;
+  positions: Position[];
+  statuses: Statuses[];
 };
 
 const Candidates = ({
@@ -31,7 +35,9 @@ const Candidates = ({
   selectedPosition,
   selectedStatus,
   openDrawer = mock,
-  isFavorite
+  isFavorite,
+  positions,
+  statuses
 }: CandidatesProps) => {
   const titleTable = ['Name', 'Email', 'Position', 'Status'];
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -42,6 +48,31 @@ const Candidates = ({
     selectedStatus,
     isFavorite
   );
+
+  const stylesArray: { [id: string]: string } = {
+    'Rejected': 'text-statuses-rejected',
+    'New': 'text-statuses-new',
+    'In process': 'text-statuses-inProcess',
+    'Hired': 'text-statuses-hired',
+    'All statuses': 'text-gray-400'
+  };
+
+  const titleChecker = (data: string) => {
+    const position = positions.find((el) => el.id === data);
+    if (position) {
+      return position.position;
+    }
+    const status = statuses.find((el) => el.id === data);
+    if (status) {
+      return status.status;
+    }
+
+    return data;
+  };
+
+  const styleChecker = (id: string) => {
+    return stylesArray[id] || '';
+  };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -101,8 +132,8 @@ const Candidates = ({
                 {[
                   candidate.name,
                   candidate.email,
-                  candidate.position,
-                  candidate.status
+                  titleChecker(candidate.position),
+                  titleChecker(candidate.status)
                 ].map((data, index) => (
                   <TableCell
                     onClick={handlerOpenDrawer(candidate.id)}
@@ -110,6 +141,7 @@ const Candidates = ({
                     className="border-black border-opacity-[0.2] border-y-2 p-[12px]"
                   >
                     <Typography
+                      className={styleChecker(data)}
                       sx={{
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',

@@ -13,7 +13,7 @@ module.exports = {
         },
         statuses: {
           new: '#786240',
-          inProgress: '#ff9914',
+          inProcess: '#ff9914',
           rejected: '#f21b3f',
           hired: '#29bf12'
         },
