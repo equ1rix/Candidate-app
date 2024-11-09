@@ -98,7 +98,8 @@ const Homepage = () => {
             onStatusChange={setSelectedStatus}
             statuses={statuses}
             positions={positions}
-            isFavoriteChange={setIsFavorite}
+            onFavoriteChange={setIsFavorite}
+            isFavorite={isFavorite}
           />
         </Grid>
         <Grid item xs={9} sm={10}>

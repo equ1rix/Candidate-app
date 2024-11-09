@@ -28,7 +28,8 @@ type SidebarProps = {
   onStatusChange: (position: string) => void;
   positions: Position[];
   statuses: Statuses[];
-  isFavoriteChange: (favorite: boolean) => void;
+  onFavoriteChange: (favorite: boolean) => void;
+  isFavorite: boolean;
 };
 
 const Sidebar = ({
@@ -39,11 +40,11 @@ const Sidebar = ({
   onStatusChange,
   positions,
   statuses,
-  isFavoriteChange
+  onFavoriteChange,
+  isFavorite
 }: SidebarProps) => {
   const [position, setPosition] = useState<string>('');
   const [status, setStatus] = useState<string>('');
-  const [favorite, setFavorite] = useState<boolean>(false);
 
   const { t } = useTranslation();
 
@@ -58,8 +59,7 @@ const Sidebar = ({
   };
 
   const handleChangeFavorite = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFavorite(e.target.checked);
-    isFavoriteChange(e.target.checked);
+    onFavoriteChange(e.target.checked);
   };
 
   const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,7 +135,7 @@ const Sidebar = ({
 
       <FormControlLabel
         control={
-          <Checkbox checked={favorite} onChange={handleChangeFavorite} />
+          <Checkbox checked={isFavorite} onChange={handleChangeFavorite} />
         }
         label="Favorite"
       />
