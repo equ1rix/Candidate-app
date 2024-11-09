@@ -33,7 +33,7 @@ const Candidates = ({
   openDrawer = mock,
   isFavorite
 }: CandidatesProps) => {
-  const titleTable = ['Name', 'Email', 'Phone'];
+  const titleTable = ['Name', 'Email', 'Position', 'Status'];
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { candidates, totalPages } = useFetchCandidates(
     currentPage,
@@ -94,19 +94,32 @@ const Candidates = ({
           </TableHead>
           <TableBody>
             {candidates.map((candidate) => (
-              <TableRow key={candidate.id} className="bg-bg-main">
-                {[candidate.name, candidate.email, candidate.phone].map(
-                  (data, index) => (
-                    <TableCell
-                      onClick={handlerOpenDrawer(candidate.id)}
-                      key={index}
-                      className="border-black border-opacity-[0.2] border-y-2 p-[12px] "
-                      style={{ cursor: 'pointer' }}
+              <TableRow
+                key={candidate.id}
+                className="bg-bg-main hover:bg-bg-modalSecondButton transition duration-300 ease-in-out"
+              >
+                {[
+                  candidate.name,
+                  candidate.email,
+                  candidate.position,
+                  candidate.status
+                ].map((data, index) => (
+                  <TableCell
+                    onClick={handlerOpenDrawer(candidate.id)}
+                    key={index}
+                    className="border-black border-opacity-[0.2] border-y-2 p-[12px]"
+                  >
+                    <Typography
+                      sx={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                      }}
                     >
-                      <Typography>{data}</Typography>
-                    </TableCell>
-                  )
-                )}
+                      {data}
+                    </Typography>
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>

@@ -11,11 +11,17 @@ module.exports = {
         text: {
           title: '#000000'
         },
+        statuses: {
+          new: '#786240',
+          inProgress: '#ff9914',
+          rejected: '#f21b3f',
+          hired: '#29bf12'
+        },
         bg: {
-          main: '#DDEBFC',
-          button: '#68AAF2',
-          modalButton: '#c2dcfb',
-          modalSecondButton: '#f0f6fe',
+          main: '#eff2ef',
+          button: '#a682ff',
+          modalButton: '#a682ff',
+          modalSecondButton: '#dbccef',
           isDisable: '#D3D3D3'
         }
       }
