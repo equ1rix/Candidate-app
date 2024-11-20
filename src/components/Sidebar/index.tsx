@@ -110,7 +110,7 @@ const Sidebar = ({
           >
             {positions.map((el) => (
               <MenuItem key={el.id} value={el.id}>
-                {el.position}
+                {el.title}
               </MenuItem>
             ))}
           </Select>
@@ -127,7 +127,7 @@ const Sidebar = ({
         >
           {statuses.map((el) => (
             <MenuItem key={el.id} value={el.id}>
-              {el.status}
+              {el.title}
             </MenuItem>
           ))}
         </Select>
