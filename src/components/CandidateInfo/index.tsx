@@ -38,9 +38,16 @@ const CandidateInfo = ({
   statuses
 }: CandidateInfoProps) => {
   const [candidates, setCandidates] = useState<Candidate | null>(candidate);
-  const { uploadCV, uploading, error, cvUrl } = useUploadCV({
-    candidateId: candidate?.id || ''
+  const { uploadCV, uploading, error } = useUploadCV({
+    onUploadSuccess: async (url) => {
+      setCandidates((prev) => (prev ? { ...prev, cvUrl: url } : null));
+      if (candidate) {
+        const candidateDocRef = doc(db, 'candidates', candidate.id);
+        await updateDoc(candidateDocRef, { cvUrl: url });
+      }
+    }
   });
+
   const handleFieldChange = (
     field: keyof Candidate,
     value: string | boolean
@@ -189,23 +196,46 @@ const CandidateInfo = ({
             ))}
           </Select>
         </Grid>
-        <Grid item>
-          <input type="file" onChange={handleFileChange} />
-          {uploading && <Typography variant="body2">Uploading...</Typography>}
-          {error && <Typography color="error">Error</Typography>}
-          {cvUrl && (
-            <Typography className="mt-2">
-              <a
-                href={cvUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-bold"
-              >
-                Download CV
-              </a>
-            </Typography>
-          )}
+        <Grid item className="mt-4">
+          <Box className="border border-gray-300 p-4 rounded-lg shadow-sm">
+            <label className="block text-gray-700 font-semibold mb-2">
+              Upload CV
+            </label>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-500
+                 file:mr-4 file:py-2 file:px-4
+                 file:rounded-full file:border-0
+                 file:text-sm file:font-semibold
+                 file:bg-indigo-100 file:text-indigo-700
+                 hover:file:bg-indigo-200"
+            />
+            {uploading && (
+              <Typography variant="body2" className="text-blue-500 mt-2">
+                Uploading...
+              </Typography>
+            )}
+            {error && (
+              <Typography color="error" className="text-red-500 mt-2">
+                Error uploading file
+              </Typography>
+            )}
+            {candidates?.cvUrl && (
+              <Typography className="mt-4">
+                <a
+                  href={candidates?.cvUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 font-semibold underline hover:text-indigo-800"
+                >
+                  Download CV
+                </a>
+              </Typography>
+            )}
+          </Box>
         </Grid>
+
         <Grid item>
           <Box display="flex" justifyContent="flex-end">
             <Button
