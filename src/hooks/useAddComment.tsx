@@ -1,4 +1,3 @@
-// hooks/useAddComment.ts
 import { setDoc, doc } from 'firebase/firestore';
 import { db } from 'helpers/firebaseConfig';
 import { v4 as uuidv4 } from 'uuid';
