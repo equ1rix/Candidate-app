@@ -4,7 +4,7 @@ import { db } from 'helpers/firebaseConfig';
 
 export type Position = {
   id: string;
-  position: string;
+  title: string;
 };
 
 export const useFetchPositions = () => {
@@ -20,10 +20,10 @@ export const useFetchPositions = () => {
         const querySnapshot = await getDocs(q);
         const positionData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          position: doc.data().position
+          title: doc.data().title
         }));
         const posArray: Position[] = [
-          { id: 'All position', position: 'All position' },
+          { id: 'All position', title: 'All position' },
           ...positionData
         ];
         setPositions(posArray);

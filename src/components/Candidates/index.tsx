@@ -49,7 +49,26 @@ const Candidates = ({
     isFavorite
   );
 
-  const stylesArray: { [id: string]: string } = {
+  const getCandidateRow = (candidate: Candidate) => [
+    {
+      title: candidate.name,
+      style: ''
+    },
+    {
+      title: candidate.email,
+      style: ''
+    },
+    {
+      title: titleChecker(candidate.position),
+      style: ''
+    },
+    {
+      title: titleChecker(candidate.status),
+      style: statusStyles[titleChecker(candidate.status)]
+    }
+  ];
+
+  const statusStyles: { [id: string]: string } = {
     'Rejected': 'text-statuses-rejected',
     'New': 'text-statuses-new',
     'In process': 'text-statuses-inProcess',
@@ -58,20 +77,9 @@ const Candidates = ({
   };
 
   const titleChecker = (data: string) => {
-    const position = positions.find((el) => el.id === data);
-    if (position) {
-      return position.position;
-    }
-    const status = statuses.find((el) => el.id === data);
-    if (status) {
-      return status.status;
-    }
-
-    return data;
-  };
-
-  const styleChecker = (id: string) => {
-    return stylesArray[id] || '';
+    const positionAndStatus = [...positions, ...statuses];
+    const item = positionAndStatus.find((el) => el.id === data);
+    return item ? item.title : '';
   };
 
   const handlePrevPage = () => {
@@ -129,26 +137,21 @@ const Candidates = ({
                 key={candidate.id}
                 className="bg-bg-main hover:bg-bg-modalSecondButton transition duration-300 ease-in-out"
               >
-                {[
-                  candidate.name,
-                  candidate.email,
-                  titleChecker(candidate.position),
-                  titleChecker(candidate.status)
-                ].map((data, index) => (
+                {getCandidateRow(candidate).map((cell, index) => (
                   <TableCell
-                    onClick={handlerOpenDrawer(candidate.id)}
                     key={index}
+                    onClick={handlerOpenDrawer(candidate.id)}
                     className="border-black border-opacity-[0.2] border-y-2 p-[12px]"
                   >
                     <Typography
-                      className={styleChecker(data)}
+                      className={cell.style}
                       sx={{
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis'
                       }}
                     >
-                      {data}
+                      {cell.title}
                     </Typography>
                   </TableCell>
                 ))}

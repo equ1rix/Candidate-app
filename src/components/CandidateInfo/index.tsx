@@ -160,7 +160,7 @@ const CandidateInfo = ({
           >
             {positions.map((pos) => (
               <MenuItem key={pos.id} value={pos.id}>
-                {pos.position}
+                {pos.title}
               </MenuItem>
             ))}
           </Select>
@@ -176,7 +176,7 @@ const CandidateInfo = ({
           >
             {statuses.map((el) => (
               <MenuItem key={el.id} value={el.id}>
-                {el.status}
+                {el.title}
               </MenuItem>
             ))}
           </Select>

@@ -4,7 +4,7 @@ import { db } from 'helpers/firebaseConfig';
 
 export type Statuses = {
   id: string;
-  status: string;
+  title: string;
 };
 
 export const useFetchStatuses = () => {
@@ -18,10 +18,10 @@ export const useFetchStatuses = () => {
         const querySnapshot = await getDocs(q);
         const statusData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          status: doc.data().status
+          title: doc.data().title
         }));
         const posArray: Statuses[] = [
-          { id: 'All statuses', status: 'All statuses' },
+          { id: 'All statuses', title: 'All statuses' },
           ...statusData
         ];
         setStatuses(posArray);
