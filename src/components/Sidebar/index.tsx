@@ -30,6 +30,7 @@ type SidebarProps = {
   statuses: Statuses[];
   onFavoriteChange: (favorite: boolean) => void;
   isFavorite: boolean;
+  permissions: { [key: string]: boolean };
 };
 
 const Sidebar = ({
@@ -41,10 +42,11 @@ const Sidebar = ({
   positions,
   statuses,
   onFavoriteChange,
-  isFavorite
+  isFavorite,
+  permissions
 }: SidebarProps) => {
-  const [position, setPosition] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
+  const [position, setPosition] = useState<string>('All position');
+  const [status, setStatus] = useState<string>('All statuses');
 
   const { t } = useTranslation();
 
@@ -87,6 +89,7 @@ const Sidebar = ({
         className="bg-bg-button mt-[20px] mb-[35px]"
         color="inherit"
         onClick={onClick}
+        disabled={!permissions.create}
       >
         {t('add new cadidates')}
       </Button>
@@ -96,6 +99,7 @@ const Sidebar = ({
           className="text-text-title ml-[5px] flex-grow"
           value={value}
           onChange={handleChangeValue}
+          disabled={!permissions.search}
         ></Input>
       </span>
       <span className="flex  mb-[30px] items-center">
@@ -107,6 +111,7 @@ const Sidebar = ({
             value={position}
             label="Position"
             onChange={handleChangePosition}
+            disabled={!permissions.search}
           >
             {positions.map((el) => (
               <MenuItem key={el.id} value={el.id}>
@@ -124,6 +129,7 @@ const Sidebar = ({
           value={status}
           label="Status"
           onChange={handleChangeStatus}
+          disabled={!permissions.search}
         >
           {statuses.map((el) => (
             <MenuItem key={el.id} value={el.id}>
@@ -135,7 +141,11 @@ const Sidebar = ({
 
       <FormControlLabel
         control={
-          <Checkbox checked={isFavorite} onChange={handleChangeFavorite} />
+          <Checkbox
+            checked={isFavorite}
+            onChange={handleChangeFavorite}
+            disabled={!permissions.search}
+          />
         }
         label="Favorite"
       />

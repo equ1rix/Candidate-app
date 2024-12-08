@@ -29,13 +29,15 @@ type CandidateInfoProps = {
   candidate: Candidate | null;
   statuses: Statuses[];
   positions: Position[];
+  ableToEdit: boolean;
 };
 
 const CandidateInfo = ({
   onClose = mock,
   candidate,
   positions,
-  statuses
+  statuses,
+  ableToEdit
 }: CandidateInfoProps) => {
   const [candidates, setCandidates] = useState<Candidate | null>(candidate);
   const { uploadCV, uploading, error } = useUploadCV({
@@ -99,7 +101,8 @@ const CandidateInfo = ({
   ];
 
   const isButtonDisabled =
-    JSON.stringify(candidate) === JSON.stringify(candidates);
+    !ableToEdit ||
+    (JSON.stringify(candidate) === JSON.stringify(candidates) && !uploading);
 
   const updateCandidateInfo = async (updatedInfo: Partial<Candidate>) => {
     if (candidate) {
@@ -205,11 +208,11 @@ const CandidateInfo = ({
               type="file"
               onChange={handleFileChange}
               className="block w-full text-sm text-gray-500
-                 file:mr-4 file:py-2 file:px-4
-                 file:rounded-full file:border-0
-                 file:text-sm file:font-semibold
-                 file:bg-indigo-100 file:text-indigo-700
-                 hover:file:bg-indigo-200"
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-indigo-100 file:text-indigo-700
+                  hover:file:bg-indigo-200"
             />
             {uploading && (
               <Typography variant="body2" className="text-blue-500 mt-2">
