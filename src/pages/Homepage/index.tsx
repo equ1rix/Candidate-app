@@ -14,6 +14,9 @@ import CandidatesModal from 'components/CandidatesModal';
 import CandidateDrawer from 'components/CandidateDrawer';
 import { useFetchStatuses } from 'hooks/useFetchStatuses';
 import { useFetchPositions } from 'hooks/useFetchPositions';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
+import { checkPermission } from 'helpers';
 
 export interface Candidate {
   id: string;
@@ -37,6 +40,9 @@ const Homepage = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [openDrawer, setOpenDrawer] = useState<Candidate | null>(null);
+
+  const user = useSelector((state: RootState) => state.user.user);
+  const permission = checkPermission(user!);
 
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
@@ -101,6 +107,7 @@ const Homepage = () => {
             positions={positions}
             onFavoriteChange={setIsFavorite}
             isFavorite={isFavorite}
+            permissions={permission}
           />
         </Grid>
         <Grid item xs={9} sm={10}>
@@ -126,6 +133,7 @@ const Homepage = () => {
               statuses={statuses}
               positions={positions}
               onClose={closeCandidateInfo}
+              permissions={permission}
             />
           )}
         </Grid>

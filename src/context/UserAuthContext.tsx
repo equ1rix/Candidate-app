@@ -79,32 +79,26 @@ export const UserAuthContextProvider = ({
   };
 
   const handleUserAuthentication = useCallback(
-    async (currentUser?: FirebaseUser | null) => {
-      const userToSet = currentUser || auth.currentUser;
-      if (userToSet) {
-        const user: User = {
-          id: userToSet.uid,
-          email: userToSet.email,
-          name: userToSet.displayName,
-          role: 'Recruiter'
-        };
-        dispatch(signInAction(user));
-        const { displayName: name, email, uid } = userToSet;
-        const nameToSave = name ? name : email;
-        const userDocRef = doc(db, 'users', uid);
-        const userDocSnapshot = await getDoc(userDocRef);
+    async (currentUser: FirebaseUser) => {
+      const { uid } = currentUser;
+      const userDocRef = doc(db, 'users', uid);
+      const userDocSnapshot = await getDoc(userDocRef);
 
-        if (!userDocSnapshot.exists()) {
-          await setDoc(userDocRef, {
-            id: uid,
-            name: nameToSave,
-            email: email,
-            role: 'Recruiter'
-          });
-        }
-        const currentPath = location.pathname;
-        navigate(currentPath === '/' ? '/homepage' : currentPath);
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data() as User;
+        dispatch(signInAction(userData));
+      } else {
+        const user: User = {
+          id: currentUser.uid,
+          email: currentUser.email,
+          name: currentUser.displayName,
+          allowedFeatures: ['DEgH207MQxG04niWQtx4']
+        };
+        await setDoc(userDocRef, user);
+        dispatch(signInAction(user));
       }
+      const currentPath = location.pathname;
+      navigate(currentPath === '/' ? '/homepage' : currentPath);
     },
     [dispatch]
   );

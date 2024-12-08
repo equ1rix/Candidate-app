@@ -16,13 +16,15 @@ type CandidateDrawerProps = {
   candidate: Candidate | null;
   positions: Position[];
   statuses: Statuses[];
+  permissions: { [key: string]: boolean };
 };
 
 const CandidateDrawer = ({
   onClose = mock,
   candidate,
   positions,
-  statuses
+  statuses,
+  permissions
 }: CandidateDrawerProps) => {
   const [tab, setTab] = useState<number>(0);
   const { t } = useTranslation();
@@ -69,6 +71,7 @@ const CandidateDrawer = ({
             positions={positions}
             candidate={candidate}
             onClose={onClose}
+            ableToEdit={permissions.update}
           />
         )}
         {tab === 1 && candidate?.id != undefined && (
