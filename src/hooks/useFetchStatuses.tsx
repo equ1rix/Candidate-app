@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { collection, getDocs, query } from 'firebase/firestore';
-import { db } from 'helpers/firebaseConfig';
+import { db } from 'Firebase/firebaseConfig';
 
 export type Statuses = {
   id: string;

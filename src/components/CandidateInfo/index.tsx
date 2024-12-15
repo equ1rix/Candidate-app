@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Position } from 'hooks/useFetchPositions';
 import { mock } from 'helpers';
-import { db } from 'helpers/firebaseConfig';
+import { db } from 'Firebase/firebaseConfig';
 import { Candidate } from 'pages/Homepage';
 import Label from 'components/Label';
 import { Statuses } from 'hooks/useFetchStatuses';

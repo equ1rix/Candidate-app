@@ -8,7 +8,7 @@ import {
   startAfter,
   where
 } from 'firebase/firestore';
-import { db } from 'helpers/firebaseConfig';
+import { db } from 'Firebase/firebaseConfig';
 import { Candidate } from 'pages/Homepage';
 import { useEffect, useState } from 'react';
 

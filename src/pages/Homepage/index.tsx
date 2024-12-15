@@ -5,7 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 
 import { ModalContext } from 'context/ModalTaskContext';
 import { useFetchCandidates } from 'hooks/useFetchCandidates';
-import { db } from 'helpers/firebaseConfig';
+import { db } from 'Firebase/firebaseConfig';
 
 import Candidates from 'components/Candidates';
 import Sidebar from 'components/Sidebar';

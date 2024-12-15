@@ -13,8 +13,8 @@ import {
 } from 'firebase/auth';
 import { signInAction, logOutAction, User } from '../redux/reduser';
 
-import { db } from 'helpers/firebaseConfig';
-import { auth, provider } from 'helpers/firebaseConfig';
+import { db } from 'Firebase/firebaseConfig';
+import { auth, provider } from 'Firebase/firebaseConfig';
 
 export type UserAuthContextType = {
   signUp: (email: string, password: string) => void;
