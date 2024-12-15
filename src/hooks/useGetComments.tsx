@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from 'helpers/firebaseConfig';
+import { db } from 'Firebase/firebaseConfig';
 
 interface Comment {
   id: string;

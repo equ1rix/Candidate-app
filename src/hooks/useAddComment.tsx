@@ -1,5 +1,5 @@
 import { setDoc, doc } from 'firebase/firestore';
-import { db } from 'helpers/firebaseConfig';
+import { db } from 'Firebase/firebaseConfig';
 import { v4 as uuidv4 } from 'uuid';
 
 interface Comment {

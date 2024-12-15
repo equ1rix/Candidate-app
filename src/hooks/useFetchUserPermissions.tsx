@@ -1,5 +1,5 @@
 import { collection, getDocs, query } from 'firebase/firestore';
-import { db } from 'helpers/firebaseConfig';
+import { db } from 'Firebase/firebaseConfig';
 import { useEffect, useState } from 'react';
 
 export type Permissions = {

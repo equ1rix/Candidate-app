@@ -1,5 +1,5 @@
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from 'helpers/firebaseConfig';
+import { db } from 'Firebase/firebaseConfig';
 
 const useUpdateCommentText = () => {
   const updateCommentText = async (id: string, newText: string) => {

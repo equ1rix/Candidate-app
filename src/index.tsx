@@ -9,10 +9,10 @@ import { PersistGate } from 'redux-persist/integration/react';
 import './index.css';
 import 'tailwindcss/tailwind.css';
 
-import theme from 'helpers/theme';
+import theme from 'Styles/theme';
 import { UserAuthContextProvider } from 'context/UserAuthContext';
 import { ModalContextProvider } from 'context/ModalTaskContext';
-import ProtectedRoute from 'helpers/ProtectedRoute';
+import ProtectedRoute from 'HOC';
 
 import Homepage from 'pages/Homepage';
 import SignIn from 'pages/SignIn';
