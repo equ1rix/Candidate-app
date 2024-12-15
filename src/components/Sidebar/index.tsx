@@ -45,8 +45,8 @@ const Sidebar = ({
   isFavorite,
   permissions
 }: SidebarProps) => {
-  const [position, setPosition] = useState<string>('All position');
-  const [status, setStatus] = useState<string>('All statuses');
+  const [position, setPosition] = useState<string>('');
+  const [status, setStatus] = useState<string>('');
 
   const { t } = useTranslation();
 
@@ -115,7 +115,7 @@ const Sidebar = ({
           >
             {positions.map((el) => (
               <MenuItem key={el.id} value={el.id}>
-                {el.position}
+                {el.title}
               </MenuItem>
             ))}
           </Select>
@@ -133,7 +133,7 @@ const Sidebar = ({
         >
           {statuses.map((el) => (
             <MenuItem key={el.id} value={el.id}>
-              {el.status}
+              {el.title}
             </MenuItem>
           ))}
         </Select>

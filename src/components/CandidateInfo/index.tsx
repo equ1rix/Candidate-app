@@ -100,9 +100,8 @@ const CandidateInfo = ({
     }
   ];
 
-  const isButtonDisabled =
-    !ableToEdit ||
-    (JSON.stringify(candidate) === JSON.stringify(candidates) && !uploading);
+  const isDisabled =
+    JSON.stringify(candidate) === JSON.stringify(candidates) && !uploading;
 
   const updateCandidateInfo = async (updatedInfo: Partial<Candidate>) => {
     if (candidate) {
@@ -150,6 +149,7 @@ const CandidateInfo = ({
                 name={el.name}
                 value={el.value}
                 onChange={(e) => el.func(e.target.value)}
+                disabled={!ableToEdit}
               />
             </FormControl>
           </Grid>
@@ -161,6 +161,7 @@ const CandidateInfo = ({
                 <Checkbox
                   checked={el.value}
                   onChange={(e) => el.func(e.target.checked)}
+                  disabled={!ableToEdit}
                 />
               }
               label={el.label}
@@ -175,10 +176,11 @@ const CandidateInfo = ({
             value={candidates?.position}
             label="Position"
             onChange={handleChangePosition}
+            disabled={!ableToEdit}
           >
             {positions.map((pos) => (
               <MenuItem key={pos.id} value={pos.id}>
-                {pos.position}
+                {pos.title}
               </MenuItem>
             ))}
           </Select>
@@ -191,10 +193,11 @@ const CandidateInfo = ({
             value={candidates?.status}
             label="Position"
             onChange={handleChangeStatus}
+            disabled={!ableToEdit}
           >
             {statuses.map((el) => (
               <MenuItem key={el.id} value={el.id}>
-                {el.status}
+                {el.title}
               </MenuItem>
             ))}
           </Select>
@@ -213,6 +216,7 @@ const CandidateInfo = ({
                   file:text-sm file:font-semibold
                   file:bg-indigo-100 file:text-indigo-700
                   hover:file:bg-indigo-200"
+              disabled={!ableToEdit}
             />
             {uploading && (
               <Typography variant="body2" className="text-blue-500 mt-2">
@@ -243,7 +247,7 @@ const CandidateInfo = ({
           <Box display="flex" justifyContent="flex-end">
             <Button
               onClick={handleSave}
-              disabled={isButtonDisabled}
+              disabled={isDisabled || !ableToEdit}
               variant="contained"
               className="bg-bg-modalButton"
             >
