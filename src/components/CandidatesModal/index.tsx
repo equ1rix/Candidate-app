@@ -161,7 +161,7 @@ const CandidatesModal = ({
               >
                 {positions.map((pos) => (
                   <MenuItem key={pos.id} value={pos.id}>
-                    {pos.position}
+                    {pos.title}
                   </MenuItem>
                 ))}
               </Select>
@@ -177,7 +177,7 @@ const CandidatesModal = ({
               >
                 {statuses.map((el) => (
                   <MenuItem key={el.id} value={el.id}>
-                    {el.status}
+                    {el.title}
                   </MenuItem>
                 ))}
               </Select>

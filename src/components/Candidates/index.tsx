@@ -60,11 +60,11 @@ const Candidates = ({
   const titleChecker = (data: string) => {
     const position = positions.find((el) => el.id === data);
     if (position) {
-      return position.position;
+      return position.title;
     }
     const status = statuses.find((el) => el.id === data);
     if (status) {
-      return status.status;
+      return status.title;
     }
 
     return data;
