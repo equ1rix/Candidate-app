@@ -4,7 +4,7 @@ export interface User {
   id: string;
   email: string | null;
   name: string | null;
-  role?: string;
+  allowedFeatures: string[];
 }
 export interface AppState {
   user: User | null;

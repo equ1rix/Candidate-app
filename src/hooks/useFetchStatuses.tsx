@@ -10,24 +10,23 @@ export type Statuses = {
 export const useFetchStatuses = () => {
   const [statuses, setStatuses] = useState<Statuses[]>([]);
 
+  const fetchstatusData = async () => {
+    try {
+      const candidatesRef = collection(db, 'statuses');
+      const q = query(candidatesRef);
+      const querySnapshot = await getDocs(q);
+      const statusData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        title: doc.data().title
+      }));
+      const posArray: Statuses[] = [
+        { id: 'all_statuses', title: 'All statuses' },
+        ...statusData
+      ];
+      setStatuses(posArray);
+    } catch (err) {}
+  };
   useEffect(() => {
-    const fetchstatusData = async () => {
-      try {
-        const candidatesRef = collection(db, 'statuses');
-        const q = query(candidatesRef);
-        const querySnapshot = await getDocs(q);
-        const statusData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          title: doc.data().title
-        }));
-        const posArray: Statuses[] = [
-          { id: 'All statuses', title: 'All statuses' },
-          ...statusData
-        ];
-        setStatuses(posArray);
-      } catch (err) {}
-    };
-
     fetchstatusData();
   }, []);
 

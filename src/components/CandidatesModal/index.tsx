@@ -10,7 +10,8 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc } from 'firebase/firestore';
@@ -23,6 +24,7 @@ import CustomModal from 'components/CustomModal';
 import Label from 'components/Label';
 import { Position } from 'hooks/useFetchPositions';
 import { Statuses } from 'hooks/useFetchStatuses';
+import useUploadCV from 'hooks/useUploadCV';
 
 type CandidatesModalProps = {
   onClose: () => void;
@@ -44,6 +46,11 @@ const CandidatesModal = ({
   const [position, setPosition] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
+  const [cvUrl, setCvUrl] = useState<string | null>(null);
+
+  const { uploadCV, uploading, error } = useUploadCV({
+    onUploadSuccess: (url) => setCvUrl(url)
+  });
 
   const { t } = useTranslation();
 
@@ -63,7 +70,7 @@ const CandidatesModal = ({
     }
   ];
 
-  const isButtonDisabled = !name || !email || !status || !position;
+  const isButtonDisabled = !name || !email || !position || !status;
 
   const handleChangePosition = (e: SelectChangeEvent) => {
     setPosition(e.target.value);
@@ -85,6 +92,7 @@ const CandidatesModal = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
       const newId = uuidv4();
       await setDoc(doc(db, 'candidates', newId), {
@@ -96,10 +104,17 @@ const CandidatesModal = ({
         position: position,
         github: gitHub,
         linkedin: linkedIn,
-        status: status
+        status: status,
+        cvUrl: cvUrl
       });
       closeModal();
     } catch (err) {}
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      uploadCV(event.target.files[0]);
+    }
   };
 
   return (
@@ -136,13 +151,13 @@ const CandidatesModal = ({
               </Grid>
             ))}
             <Grid item>
-              <InputLabel id="position-select-label">Position</InputLabel>
+              <InputLabel id="status-select-label">{t('Position')}</InputLabel>
               <Select
-                labelId="position-select-label"
-                id="position-select"
+                labelId="status-select-label"
+                id="status-select"
                 value={position}
                 label="Position"
-                onChange={handleChangePosition}
+                onChange={handleChangeStatus}
               >
                 {positions.map((pos) => (
                   <MenuItem key={pos.id} value={pos.id}>
@@ -158,7 +173,7 @@ const CandidatesModal = ({
                 id="status-select"
                 value={status}
                 label="Status"
-                onChange={handleChangeStatus}
+                onChange={handleChangePosition}
               >
                 {statuses.map((el) => (
                   <MenuItem key={el.id} value={el.id}>
@@ -166,6 +181,45 @@ const CandidatesModal = ({
                   </MenuItem>
                 ))}
               </Select>
+            </Grid>
+            <Grid item className="mt-4">
+              <Box className="border border-gray-300 p-4 rounded-lg shadow-sm">
+                <label className="block text-gray-700 font-semibold mb-2">
+                  Upload CV
+                </label>
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="block w-full text-sm text-gray-500
+                 file:mr-4 file:py-2 file:px-4
+                 file:rounded-full file:border-0
+                 file:text-sm file:font-semibold
+                 file:bg-indigo-100 file:text-indigo-700
+                 hover:file:bg-indigo-200"
+                />
+                {uploading && (
+                  <Typography variant="body2" className="text-blue-500 mt-2">
+                    Uploading...
+                  </Typography>
+                )}
+                {error && (
+                  <Typography color="error" className="text-red-500 mt-2">
+                    Error uploading file
+                  </Typography>
+                )}
+                {cvUrl && (
+                  <Typography className="mt-4">
+                    <a
+                      href={cvUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-indigo-600 font-semibold underline hover:text-indigo-800"
+                    >
+                      Download CV
+                    </a>
+                  </Typography>
+                )}
+              </Box>
             </Grid>
             <Grid item>
               <Box display="flex" justifyContent="flex-end">
@@ -175,7 +229,7 @@ const CandidatesModal = ({
                   disabled={isButtonDisabled}
                   className="bg-bg-modalButton"
                 >
-                  <Label label={t('add')} />
+                  <Label label={t('Save')} />
                 </Button>
               </Box>
             </Grid>

@@ -14,6 +14,8 @@ import CandidatesModal from 'components/CandidatesModal';
 import CandidateDrawer from 'components/CandidateDrawer';
 import { useFetchStatuses } from 'hooks/useFetchStatuses';
 import { useFetchPositions } from 'hooks/useFetchPositions';
+import { getPermissions } from 'helpers';
+import { useFetchPermissions } from 'hooks/useFetchPermissions';
 
 export interface Candidate {
   id: string;
@@ -25,6 +27,7 @@ export interface Candidate {
   status: string;
   favorite: boolean;
   position: string;
+  cvUrl?: string;
 }
 
 const Homepage = () => {
@@ -36,6 +39,9 @@ const Homepage = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [openDrawer, setOpenDrawer] = useState<Candidate | null>(null);
+  const { permissions } = useFetchPermissions();
+
+  const permission = getPermissions(permissions);
 
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
@@ -100,6 +106,7 @@ const Homepage = () => {
             positions={positions}
             onFavoriteChange={setIsFavorite}
             isFavorite={isFavorite}
+            permissions={permission}
           />
         </Grid>
         <Grid item xs={9} sm={10}>
@@ -125,6 +132,7 @@ const Homepage = () => {
               statuses={statuses}
               positions={positions}
               onClose={closeCandidateInfo}
+              permissions={permission}
             />
           )}
         </Grid>
