@@ -40,6 +40,7 @@ export const UserAuthContextProvider = ({
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const DEFAULT_PERMISSIONS = [{ title: 'update', id: 'DEgH207MQxG04niWQtx4' }];
 
   const signUp = async (email: string, password: string) => {
     try {
@@ -92,7 +93,9 @@ export const UserAuthContextProvider = ({
           id: currentUser.uid,
           email: currentUser.email,
           name: currentUser.displayName,
-          allowedFeatures: ['DEgH207MQxG04niWQtx4']
+          allowedFeatures: DEFAULT_PERMISSIONS.map(
+            (permission) => permission.id
+          )
         };
         await setDoc(userDocRef, user);
         dispatch(signInAction(user));

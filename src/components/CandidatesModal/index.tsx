@@ -151,17 +151,17 @@ const CandidatesModal = ({
               </Grid>
             ))}
             <Grid item>
-              <InputLabel id="position-select-label">Position</InputLabel>
+              <InputLabel id="status-select-label">{t('Position')}</InputLabel>
               <Select
-                labelId="position-select-label"
-                id="position-select"
+                labelId="status-select-label"
+                id="status-select"
                 value={position}
                 label="Position"
-                onChange={handleChangePosition}
+                onChange={handleChangeStatus}
               >
-                {positions.map((pos) => (
-                  <MenuItem key={pos.id} value={pos.id}>
-                    {pos.title}
+                {statuses.map((el) => (
+                  <MenuItem key={el.id} value={el.id}>
+                    {el.title}
                   </MenuItem>
                 ))}
               </Select>
@@ -173,11 +173,11 @@ const CandidatesModal = ({
                 id="status-select"
                 value={status}
                 label="Status"
-                onChange={handleChangeStatus}
+                onChange={handleChangePosition}
               >
-                {statuses.map((el) => (
-                  <MenuItem key={el.id} value={el.id}>
-                    {el.title}
+                {positions.map((pos) => (
+                  <MenuItem key={pos.id} value={pos.id}>
+                    {pos.title}
                   </MenuItem>
                 ))}
               </Select>

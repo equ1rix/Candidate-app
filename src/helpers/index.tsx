@@ -1,14 +1,16 @@
-import { useFetchUserPermissions } from 'hooks/useFetchUserPermissions';
-import { User } from 'redux/reduser';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../redux/selector';
+import { Permissions } from 'hooks/useFetchPermissions';
 
 export const mock = () => {};
 
-export const checkPermission = (user: User) => {
-  const { permissions } = useFetchUserPermissions();
+export const getPermissions = (permissions: Permissions[]) => {
+  const user = useSelector(selectUser);
 
   const permissionsList = permissions.reduce(
     (acc, permission) => {
-      acc[permission.title] = user.allowedFeatures.includes(permission.id);
+      acc[permission.title] =
+        user?.allowedFeatures?.includes(permission.id) || false;
       return acc;
     },
     {} as Record<string, boolean>

@@ -6,7 +6,7 @@ export type Permissions = {
   id: string;
   title: string;
 };
-export const useFetchUserPermissions = () => {
+export const useFetchPermissions = () => {
   const [permissions, setPermissions] = useState<Permissions[]>([]);
 
   const fetchPermissionsData = async () => {

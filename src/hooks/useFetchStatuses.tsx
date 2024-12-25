@@ -20,7 +20,7 @@ export const useFetchStatuses = () => {
         title: doc.data().title
       }));
       const posArray: Statuses[] = [
-        { id: 'All statuses', title: 'All statuses' },
+        { id: 'all_statuses', title: 'All statuses' },
         ...statusData
       ];
       setStatuses(posArray);

@@ -35,7 +35,7 @@ export const useFetchCandidates = (
       const candidatesRef = collection(db, 'candidates');
 
       const constraintsForCount = [];
-      if (position && position !== 'All position') {
+      if (position && position !== 'all_positions') {
         constraintsForCount.push(where('position', '==', position));
       }
       if (search) {
@@ -44,7 +44,7 @@ export const useFetchCandidates = (
           where('name', '<=', search + '\uf8ff')
         );
       }
-      if (status && status !== 'All statuses') {
+      if (status && status !== 'all_statuses') {
         constraintsForCount.push(where('status', '==', status));
       }
       if (favorite) {
