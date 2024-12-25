@@ -28,6 +28,7 @@ export interface Candidate {
   favorite: boolean;
   position: string;
   cvUrl?: string;
+  assignedUser?: string;
 }
 
 const Homepage = () => {

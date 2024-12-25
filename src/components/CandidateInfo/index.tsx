@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -13,7 +14,6 @@ import {
   Typography
 } from '@mui/material';
 import { doc, updateDoc } from 'firebase/firestore';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Position } from 'hooks/useFetchPositions';
@@ -23,6 +23,7 @@ import { Candidate } from 'pages/Homepage';
 import Label from 'components/Label';
 import { Statuses } from 'hooks/useFetchStatuses';
 import useUploadCV from 'hooks/useUploadCV';
+import { useFetchUsers } from 'hooks/useFetchUsers';
 
 type CandidateInfoProps = {
   onClose: () => void;
@@ -40,6 +41,10 @@ const CandidateInfo = ({
   ableToEdit
 }: CandidateInfoProps) => {
   const [candidates, setCandidates] = useState<Candidate | null>(candidate);
+  const [assignedUser, setAssignedUser] = useState<string | null>(null);
+
+  const { users } = useFetchUsers();
+
   const { uploadCV, uploading, error } = useUploadCV({
     onUploadSuccess: async (url) => {
       setCandidates((prev) => (prev ? { ...prev, cvUrl: url } : null));
@@ -55,6 +60,15 @@ const CandidateInfo = ({
     value: string | boolean
   ) => {
     setCandidates((prev) => (prev ? { ...prev, [field]: value } : null));
+  };
+
+  const handleUserChange = (e: SelectChangeEvent) => {
+    const userId = e.target.value;
+    setAssignedUser(userId);
+    if (candidate) {
+      const candidateDocRef = doc(db, 'candidates', candidate.id);
+      updateDoc(candidateDocRef, { assignedUser: userId });
+    }
   };
 
   const { t } = useTranslation();
@@ -130,16 +144,41 @@ const CandidateInfo = ({
       uploadCV(event.target.files[0]);
     }
   };
+
   return (
     <Box>
       <Grid container direction="column" spacing={2}>
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          sx={{ flexGrow: 1, padding: 3 }}
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={2}
         >
-          {t('Candidate Info')}
-        </Typography>
+          <Grid item>
+            <Typography variant="h4" fontWeight="bold" sx={{ padding: 3 }}>
+              {t('Candidate Info')}
+            </Typography>
+          </Grid>
+
+          <Grid item>
+            <InputLabel id="user-select-label">{t('Assign User')}</InputLabel>
+            <Select
+              className="min-w-[130px]"
+              labelId="user-select-label"
+              id="user-select"
+              value={assignedUser || ''}
+              onChange={handleUserChange}
+              disabled={!ableToEdit}
+            >
+              {users.map((user) => (
+                <MenuItem key={user.id} value={user.id}>
+                  {user.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+        </Grid>
         {arrayDataInput.map((el, index) => (
           <Grid key={index} item xs={12}>
             <FormControl fullWidth>
@@ -171,6 +210,7 @@ const CandidateInfo = ({
         <Grid item>
           <InputLabel id="position-select-label">{t('Position')}</InputLabel>
           <Select
+            className="min-w-[130px]"
             labelId="position-select-label"
             id="position-select"
             value={candidates?.position}
@@ -188,6 +228,7 @@ const CandidateInfo = ({
         <Grid item>
           <InputLabel id="status-select-label">{t('Position')}</InputLabel>
           <Select
+            className="min-w-[130px]"
             labelId="status-select-label"
             id="status-select"
             value={candidates?.status}

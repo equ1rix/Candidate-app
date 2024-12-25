@@ -25,6 +25,7 @@ import Label from 'components/Label';
 import { Position } from 'hooks/useFetchPositions';
 import { Statuses } from 'hooks/useFetchStatuses';
 import useUploadCV from 'hooks/useUploadCV';
+import { useFetchUsers } from 'hooks/useFetchUsers';
 
 type CandidatesModalProps = {
   onClose: () => void;
@@ -47,6 +48,9 @@ const CandidatesModal = ({
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
   const [cvUrl, setCvUrl] = useState<string | null>(null);
+  const [assignedUser, setAssignedUser] = useState<string | null>(null);
+
+  const { users } = useFetchUsers();
 
   const { uploadCV, uploading, error } = useUploadCV({
     onUploadSuccess: (url) => setCvUrl(url)
@@ -70,8 +74,7 @@ const CandidatesModal = ({
     }
   ];
 
-  const isButtonDisabled = !name || !email || !position || !status;
-
+  const isButtonDisabled = !name || !email;
   const handleChangePosition = (e: SelectChangeEvent) => {
     setPosition(e.target.value);
   };
@@ -90,6 +93,10 @@ const CandidatesModal = ({
     stateHandler: React.Dispatch<React.SetStateAction<boolean>>
   ) => stateHandler(e.target.checked);
 
+  const handleUserChange = (e: SelectChangeEvent) => {
+    setAssignedUser(e.target.value);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -105,7 +112,8 @@ const CandidatesModal = ({
         github: gitHub,
         linkedin: linkedIn,
         status: status,
-        cvUrl: cvUrl
+        cvUrl: cvUrl,
+        assignedUser: assignedUser
       });
       closeModal();
     } catch (err) {}
@@ -153,6 +161,7 @@ const CandidatesModal = ({
             <Grid item>
               <InputLabel id="status-select-label">{t('Position')}</InputLabel>
               <Select
+                className="min-w-[130px]"
                 labelId="status-select-label"
                 id="status-select"
                 value={position}
@@ -169,6 +178,7 @@ const CandidatesModal = ({
             <Grid item>
               <InputLabel id="status-select-label">{t('Status')}</InputLabel>
               <Select
+                className="min-w-[130px]"
                 labelId="status-select-label"
                 id="status-select"
                 value={status}
@@ -178,6 +188,22 @@ const CandidatesModal = ({
                 {statuses.map((el) => (
                   <MenuItem key={el.id} value={el.id}>
                     {el.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item>
+              <InputLabel id="user-select-label">{t('Assign User')}</InputLabel>
+              <Select
+                className="min-w-[130px]"
+                labelId="user-select-label"
+                id="user-select"
+                value={assignedUser || ''}
+                onChange={handleUserChange}
+              >
+                {users.map((user) => (
+                  <MenuItem key={user.id} value={user.id}>
+                    {user.name}
                   </MenuItem>
                 ))}
               </Select>
