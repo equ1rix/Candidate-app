@@ -6,9 +6,6 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   SelectChangeEvent,
   TextField,
   Typography
@@ -26,6 +23,7 @@ import { Position } from 'hooks/useFetchPositions';
 import { Statuses } from 'hooks/useFetchStatuses';
 import useUploadCV from 'hooks/useUploadCV';
 import { useFetchUsers } from 'hooks/useFetchUsers';
+import Selector from 'components/Selector';
 
 type CandidatesModalProps = {
   onClose: () => void;
@@ -48,7 +46,9 @@ const CandidatesModal = ({
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
   const [cvUrl, setCvUrl] = useState<string | null>(null);
-  const [assignedUser, setAssignedUser] = useState<string | null>(null);
+  const [assignedUser, setAssignedUser] = useState<string | undefined>(
+    undefined
+  );
 
   const { users } = useFetchUsers();
 
@@ -158,56 +158,24 @@ const CandidatesModal = ({
                 />
               </Grid>
             ))}
-            <Grid item>
-              <InputLabel id="status-select-label">{t('Position')}</InputLabel>
-              <Select
-                className="min-w-[130px]"
-                labelId="status-select-label"
-                id="status-select"
-                value={position}
-                label="Position"
-                onChange={handleChangeStatus}
-              >
-                {positions.map((pos) => (
-                  <MenuItem key={pos.id} value={pos.id}>
-                    {pos.title}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item>
-              <InputLabel id="status-select-label">{t('Status')}</InputLabel>
-              <Select
-                className="min-w-[130px]"
-                labelId="status-select-label"
-                id="status-select"
-                value={status}
-                label="Status"
-                onChange={handleChangePosition}
-              >
-                {statuses.map((el) => (
-                  <MenuItem key={el.id} value={el.id}>
-                    {el.title}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item>
-              <InputLabel id="user-select-label">{t('Assign User')}</InputLabel>
-              <Select
-                className="min-w-[130px]"
-                labelId="user-select-label"
-                id="user-select"
-                value={assignedUser || ''}
-                onChange={handleUserChange}
-              >
-                {users.map((user) => (
-                  <MenuItem key={user.id} value={user.id}>
-                    {user.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
+            <Selector
+              title="Position"
+              items={positions}
+              value={position}
+              handleChange={handleChangePosition}
+            />
+            <Selector
+              title="Status"
+              items={statuses}
+              value={status}
+              handleChange={handleChangeStatus}
+            />
+            <Selector
+              title="User"
+              items={users}
+              value={assignedUser}
+              handleChange={handleUserChange}
+            />
             <Grid item className="mt-4">
               <Box className="border border-gray-300 p-4 rounded-lg shadow-sm">
                 <label className="block text-gray-700 font-semibold mb-2">

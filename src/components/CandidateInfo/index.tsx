@@ -6,9 +6,6 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   SelectChangeEvent,
   TextField,
   Typography
@@ -24,6 +21,7 @@ import Label from 'components/Label';
 import { Statuses } from 'hooks/useFetchStatuses';
 import useUploadCV from 'hooks/useUploadCV';
 import { useFetchUsers } from 'hooks/useFetchUsers';
+import Selector from 'components/Selector';
 
 type CandidateInfoProps = {
   onClose: () => void;
@@ -41,7 +39,6 @@ const CandidateInfo = ({
   ableToEdit
 }: CandidateInfoProps) => {
   const [candidates, setCandidates] = useState<Candidate | null>(candidate);
-  const [assignedUser, setAssignedUser] = useState<string | null>(null);
 
   const { users } = useFetchUsers();
 
@@ -62,13 +59,9 @@ const CandidateInfo = ({
     setCandidates((prev) => (prev ? { ...prev, [field]: value } : null));
   };
 
-  const handleUserChange = (e: SelectChangeEvent) => {
+  const handleAssignedUserChange = (e: SelectChangeEvent) => {
     const userId = e.target.value;
-    setAssignedUser(userId);
-    if (candidate) {
-      const candidateDocRef = doc(db, 'candidates', candidate.id);
-      updateDoc(candidateDocRef, { assignedUser: userId });
-    }
+    handleFieldChange('assignedUser', userId);
   };
 
   const { t } = useTranslation();
@@ -161,23 +154,12 @@ const CandidateInfo = ({
             </Typography>
           </Grid>
 
-          <Grid item>
-            <InputLabel id="user-select-label">{t('Assign User')}</InputLabel>
-            <Select
-              className="min-w-[130px]"
-              labelId="user-select-label"
-              id="user-select"
-              value={assignedUser || ''}
-              onChange={handleUserChange}
-              disabled={!ableToEdit}
-            >
-              {users.map((user) => (
-                <MenuItem key={user.id} value={user.id}>
-                  {user.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
+          <Selector
+            title="Assigned User"
+            items={users}
+            value={candidates?.assignedUser}
+            handleChange={handleAssignedUserChange}
+          />
         </Grid>
         {arrayDataInput.map((el, index) => (
           <Grid key={index} item xs={12}>
@@ -207,42 +189,18 @@ const CandidateInfo = ({
             />
           </Grid>
         ))}
-        <Grid item>
-          <InputLabel id="position-select-label">{t('Position')}</InputLabel>
-          <Select
-            className="min-w-[130px]"
-            labelId="position-select-label"
-            id="position-select"
-            value={candidates?.position}
-            label="Position"
-            onChange={handleChangePosition}
-            disabled={!ableToEdit}
-          >
-            {positions.map((pos) => (
-              <MenuItem key={pos.id} value={pos.id}>
-                {pos.title}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
-        <Grid item>
-          <InputLabel id="status-select-label">{t('Position')}</InputLabel>
-          <Select
-            className="min-w-[130px]"
-            labelId="status-select-label"
-            id="status-select"
-            value={candidates?.status}
-            label="Position"
-            onChange={handleChangeStatus}
-            disabled={!ableToEdit}
-          >
-            {statuses.map((el) => (
-              <MenuItem key={el.id} value={el.id}>
-                {el.title}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
+        <Selector
+          title="Position"
+          items={positions}
+          value={candidates?.position}
+          handleChange={handleChangePosition}
+        />
+        <Selector
+          title="Status"
+          items={statuses}
+          value={candidates?.status}
+          handleChange={handleChangeStatus}
+        />
         <Grid item className="mt-4">
           <Box className="border border-gray-300 p-4 rounded-lg shadow-sm">
             <label className="block text-gray-700 font-semibold mb-2">
