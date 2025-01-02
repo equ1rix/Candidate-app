@@ -1,8 +1,9 @@
 import { ReactNode, createContext, useState } from 'react';
 
-import CandidatesModal from 'components/CandidatesModal';
 import { Statuses } from 'hooks/useFetchStatuses';
 import { Position } from 'hooks/useFetchPositions';
+
+import CandidatesModal from 'components/CandidatesModal';
 
 export type ModalContextProps = {
   isOpenModal: boolean;

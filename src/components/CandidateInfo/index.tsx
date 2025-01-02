@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -5,24 +6,23 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   SelectChangeEvent,
   TextField,
   Typography
 } from '@mui/material';
 import { doc, updateDoc } from 'firebase/firestore';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Position } from 'hooks/useFetchPositions';
 import { mock } from 'helpers';
 import { db } from 'helpers/firebaseConfig';
-import { Candidate } from 'pages/Homepage';
-import Label from 'components/Label';
-import { Statuses } from 'hooks/useFetchStatuses';
+import { useFetchUsers } from 'hooks/useFetchUsers';
+import { Position } from 'hooks/useFetchPositions';
 import useUploadCV from 'hooks/useUploadCV';
+import { Statuses } from 'hooks/useFetchStatuses';
+
+import Label from 'components/Label';
+import Selector from 'components/Selector';
+import { Candidate } from 'pages/Homepage';
 
 type CandidateInfoProps = {
   onClose: () => void;
@@ -40,6 +40,9 @@ const CandidateInfo = ({
   ableToEdit
 }: CandidateInfoProps) => {
   const [candidates, setCandidates] = useState<Candidate | null>(candidate);
+
+  const { users } = useFetchUsers();
+
   const { uploadCV, uploading, error } = useUploadCV({
     onUploadSuccess: async (url) => {
       setCandidates((prev) => (prev ? { ...prev, cvUrl: url } : null));
@@ -55,6 +58,11 @@ const CandidateInfo = ({
     value: string | boolean
   ) => {
     setCandidates((prev) => (prev ? { ...prev, [field]: value } : null));
+  };
+
+  const handleAssignedUserChange = (e: SelectChangeEvent) => {
+    const userId = e.target.value;
+    handleFieldChange('assignedUser', userId);
   };
 
   const { t } = useTranslation();
@@ -130,16 +138,31 @@ const CandidateInfo = ({
       uploadCV(event.target.files[0]);
     }
   };
+
   return (
     <Box>
       <Grid container direction="column" spacing={2}>
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          sx={{ flexGrow: 1, padding: 3 }}
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={2}
         >
-          {t('Candidate Info')}
-        </Typography>
+          <Grid item>
+            <Typography variant="h4" fontWeight="bold" sx={{ padding: 3 }}>
+              {t('Candidate Info')}
+            </Typography>
+          </Grid>
+
+          <Selector
+            title="Assigned User"
+            items={users}
+            value={candidates?.assignedUser || null}
+            getItemTitle={(user: any) => user.name}
+            handleChange={handleAssignedUserChange}
+          />
+        </Grid>
         {arrayDataInput.map((el, index) => (
           <Grid key={index} item xs={12}>
             <FormControl fullWidth>
@@ -168,40 +191,18 @@ const CandidateInfo = ({
             />
           </Grid>
         ))}
-        <Grid item>
-          <InputLabel id="position-select-label">{t('Position')}</InputLabel>
-          <Select
-            labelId="position-select-label"
-            id="position-select"
-            value={candidates?.position}
-            label="Position"
-            onChange={handleChangePosition}
-            disabled={!ableToEdit}
-          >
-            {positions.map((pos) => (
-              <MenuItem key={pos.id} value={pos.id}>
-                {pos.title}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
-        <Grid item>
-          <InputLabel id="status-select-label">{t('Position')}</InputLabel>
-          <Select
-            labelId="status-select-label"
-            id="status-select"
-            value={candidates?.status}
-            label="Position"
-            onChange={handleChangeStatus}
-            disabled={!ableToEdit}
-          >
-            {statuses.map((el) => (
-              <MenuItem key={el.id} value={el.id}>
-                {el.title}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
+        <Selector
+          title="Position"
+          items={positions}
+          value={candidates?.position || null}
+          handleChange={handleChangePosition}
+        />
+        <Selector
+          title="Status"
+          items={statuses}
+          value={candidates?.status || null}
+          handleChange={handleChangeStatus}
+        />
         <Grid item className="mt-4">
           <Box className="border border-gray-300 p-4 rounded-lg shadow-sm">
             <label className="block text-gray-700 font-semibold mb-2">

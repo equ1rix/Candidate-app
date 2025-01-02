@@ -12,13 +12,13 @@ import {
   SelectChangeEvent,
   Typography
 } from '@mui/material';
-
 import { useTranslation } from 'react-i18next';
-import { Position } from 'hooks/useFetchPositions';
+
 import { mock } from 'helpers';
+import { Position } from 'hooks/useFetchPositions';
+import { Statuses } from 'hooks/useFetchStatuses';
 
 import SearchIcon from 'components/Icons/searchIcon';
-import { Statuses } from 'hooks/useFetchStatuses';
 
 type SidebarProps = {
   onClick?: () => void;

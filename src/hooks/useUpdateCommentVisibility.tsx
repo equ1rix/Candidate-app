@@ -1,4 +1,5 @@
 import { doc, updateDoc } from 'firebase/firestore';
+
 import { db } from 'helpers/firebaseConfig';
 
 const useUpdateCommentVisibility = () => {
