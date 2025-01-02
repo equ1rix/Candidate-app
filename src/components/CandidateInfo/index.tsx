@@ -13,15 +13,16 @@ import {
 import { doc, updateDoc } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
 
-import { Position } from 'hooks/useFetchPositions';
 import { mock } from 'helpers';
 import { db } from 'helpers/firebaseConfig';
-import { Candidate } from 'pages/Homepage';
-import Label from 'components/Label';
-import { Statuses } from 'hooks/useFetchStatuses';
-import useUploadCV from 'hooks/useUploadCV';
 import { useFetchUsers } from 'hooks/useFetchUsers';
+import { Position } from 'hooks/useFetchPositions';
+import useUploadCV from 'hooks/useUploadCV';
+import { Statuses } from 'hooks/useFetchStatuses';
+
+import Label from 'components/Label';
 import Selector from 'components/Selector';
+import { Candidate } from 'pages/Homepage';
 
 type CandidateInfoProps = {
   onClose: () => void;
@@ -157,7 +158,7 @@ const CandidateInfo = ({
           <Selector
             title="Assigned User"
             items={users}
-            value={candidates?.assignedUser}
+            value={candidates?.assignedUser || null}
             handleChange={handleAssignedUserChange}
           />
         </Grid>
@@ -192,13 +193,13 @@ const CandidateInfo = ({
         <Selector
           title="Position"
           items={positions}
-          value={candidates?.position}
+          value={candidates?.position || null}
           handleChange={handleChangePosition}
         />
         <Selector
           title="Status"
           items={statuses}
-          value={candidates?.status}
+          value={candidates?.status || null}
           handleChange={handleChangeStatus}
         />
         <Grid item className="mt-4">

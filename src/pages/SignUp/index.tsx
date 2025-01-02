@@ -2,11 +2,12 @@ import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, FormControl, Grid, TextField } from '@mui/material';
 
+import { Link } from 'react-router-dom';
 import { UserAuthContext } from 'context/UserAuthContext';
+
 import Header from 'components/Header';
 import Label from 'components/Label';
 import GoogleIcon from 'components/Icons/googleIcon';
-import { Link } from 'react-router-dom';
 
 const SignUp = () => {
   const [email, setEmail] = useState<string>('');

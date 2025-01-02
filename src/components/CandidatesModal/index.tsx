@@ -13,17 +13,18 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
-import { db } from 'helpers/firebaseConfig';
-import { mock } from 'helpers';
-import { ModalContext } from 'context/ModalTaskContext';
 
-import CustomModal from 'components/CustomModal';
-import Label from 'components/Label';
+import { mock } from 'helpers';
+import { db } from 'helpers/firebaseConfig';
+import { ModalContext } from 'context/ModalTaskContext';
 import { Position } from 'hooks/useFetchPositions';
 import { Statuses } from 'hooks/useFetchStatuses';
 import useUploadCV from 'hooks/useUploadCV';
 import { useFetchUsers } from 'hooks/useFetchUsers';
+
 import Selector from 'components/Selector';
+import CustomModal from 'components/CustomModal';
+import Label from 'components/Label';
 
 type CandidatesModalProps = {
   onClose: () => void;
@@ -46,9 +47,7 @@ const CandidatesModal = ({
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
   const [cvUrl, setCvUrl] = useState<string | null>(null);
-  const [assignedUser, setAssignedUser] = useState<string | undefined>(
-    undefined
-  );
+  const [assignedUser, setAssignedUser] = useState<string | null>(null);
 
   const { users } = useFetchUsers();
 
@@ -159,19 +158,19 @@ const CandidatesModal = ({
               </Grid>
             ))}
             <Selector
-              title="Position"
+              title={t('Position')}
               items={positions}
               value={position}
               handleChange={handleChangePosition}
             />
             <Selector
-              title="Status"
+              title={t('Status')}
               items={statuses}
               value={status}
               handleChange={handleChangeStatus}
             />
             <Selector
-              title="User"
+              title={t('Assigned to')}
               items={users}
               value={assignedUser}
               handleChange={handleUserChange}

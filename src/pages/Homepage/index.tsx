@@ -3,19 +3,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Grid } from '@mui/material';
 import { doc, getDoc } from 'firebase/firestore';
 
+import { getPermissions } from 'helpers';
+import { db } from 'helpers/firebaseConfig';
 import { ModalContext } from 'context/ModalTaskContext';
 import { useFetchCandidates } from 'hooks/useFetchCandidates';
-import { db } from 'helpers/firebaseConfig';
+import { useFetchStatuses } from 'hooks/useFetchStatuses';
+import { useFetchPositions } from 'hooks/useFetchPositions';
+import { useFetchPermissions } from 'hooks/useFetchPermissions';
 
 import Candidates from 'components/Candidates';
 import Sidebar from 'components/Sidebar';
 import Header from 'components/Header';
 import CandidatesModal from 'components/CandidatesModal';
 import CandidateDrawer from 'components/CandidateDrawer';
-import { useFetchStatuses } from 'hooks/useFetchStatuses';
-import { useFetchPositions } from 'hooks/useFetchPositions';
-import { getPermissions } from 'helpers';
-import { useFetchPermissions } from 'hooks/useFetchPermissions';
 
 export interface Candidate {
   id: string;

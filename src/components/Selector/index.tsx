@@ -5,41 +5,34 @@ import {
   Select,
   SelectChangeEvent
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 
 type SelectorProps = {
-  items: { id: string | number; title?: string; name?: string }[];
-  value: string | undefined;
+  items: any;
+  value: string | null;
   handleChange: (e: SelectChangeEvent) => void;
   title?: string;
-  getItemTitle?: (item: {
-    id: string | number;
-    title?: string;
-    name?: string;
-  }) => string;
 };
+
+const getItemTitle = (item: any) => item.title || item.name || '';
 
 const Selector = ({
   items = [],
   value,
   handleChange,
-  title = '',
-  getItemTitle = (item) => item.title || item.name || ''
+  title = ''
 }: SelectorProps) => {
-  const { t } = useTranslation();
-
   return (
     <Grid item>
-      <InputLabel id="status-select-label">{t(title)}</InputLabel>
+      <InputLabel id="status-select-label">{title}</InputLabel>
       <Select
         className="min-w-[130px]"
         labelId="status-select-label"
         id="status-select"
-        value={value}
+        value={value || ''}
         label="Position"
         onChange={handleChange}
       >
-        {items.map((item) => (
+        {items.map((item: any) => (
           <MenuItem key={item.id} value={item.id}>
             {getItemTitle(item)}
           </MenuItem>
