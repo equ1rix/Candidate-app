@@ -159,6 +159,7 @@ const CandidateInfo = ({
             title="Assigned User"
             items={users}
             value={candidates?.assignedUser || null}
+            getItemTitle={(user: any) => user.name}
             handleChange={handleAssignedUserChange}
           />
         </Grid>

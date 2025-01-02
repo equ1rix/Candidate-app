@@ -173,6 +173,7 @@ const CandidatesModal = ({
               title={t('Assigned to')}
               items={users}
               value={assignedUser}
+              getItemTitle={(user: any) => user.name}
               handleChange={handleUserChange}
             />
             <Grid item className="mt-4">

@@ -11,15 +11,17 @@ type SelectorProps = {
   value: string | null;
   handleChange: (e: SelectChangeEvent) => void;
   title?: string;
+  getItemTitle?: (item: any) => string;
 };
 
-const getItemTitle = (item: any) => item.title || item.name || '';
+const getItemTitleDefault = (item: any) => item.title;
 
 const Selector = ({
   items = [],
   value,
   handleChange,
-  title = ''
+  title = '',
+  getItemTitle = getItemTitleDefault
 }: SelectorProps) => {
   return (
     <Grid item>
@@ -29,7 +31,7 @@ const Selector = ({
         labelId="status-select-label"
         id="status-select"
         value={value || ''}
-        label="Position"
+        label={title}
         onChange={handleChange}
       >
         {items.map((item: any) => (
