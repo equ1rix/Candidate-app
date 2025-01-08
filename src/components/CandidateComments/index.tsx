@@ -90,7 +90,7 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
           fontWeight="bold"
           sx={{ flexGrow: 1, padding: 3 }}
         >
-          {t('Candidate Info')}
+          {t('Comments')}
         </Typography>
         <Grid item>
           <FormControl fullWidth>
@@ -113,63 +113,67 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
           </Button>
         </Grid>
       </Grid>
-      <Grid container className="mt-4 p-2 border rounded-lg border-gray-300">
-        {comments.map(
-          (el) =>
-            el.visible && (
-              <Grid
-                className="w-[100%] min-h-[40px] bg-bg-main my-1 border rounded-lg flex flex-col px-4"
-                item
-                key={el.id}
-              >
-                <Box className="text-gray-400 flex justify-between">
-                  <Typography>{el.authorName}</Typography>
-                  <Typography>
-                    {el.dateTime.replace(/T|Z/g, ' ').split('.', 1)}
-                  </Typography>
-                </Box>
-                <Box className=" flex justify-between">
-                  {editingCommentId === el.id ? (
-                    <>
-                      <TextField
-                        className="w-full pb-1"
-                        value={editedText}
-                        onChange={(e) => setEditedText(e.target.value)}
-                        onBlur={() => handleUpdateComment(el.id)}
-                      />
-                      <Box className="w-[140px] flex p-2">
-                        <Button onClick={() => handleUpdateComment(el.id)}>
-                          <Label label={t('Save')} />
-                        </Button>
-                        <Button onClick={cancelEdit}>
-                          <Label label={t('Cancel')} />
-                        </Button>
-                      </Box>
-                    </>
-                  ) : (
-                    <>
-                      <Typography className="flex items-center">
-                        {el.text}
-                      </Typography>
-                      <Box className="w-[140px] flex p-2">
-                        <Button
-                          onClick={() => handleEditComment(el.id, el.text)}
-                        >
-                          <Label label={t('Edit')} />
-                        </Button>
-                        <Button
-                          onClick={() => updateCommentVisibility(el.id, false)}
-                        >
-                          <DeleteIcon />
-                        </Button>
-                      </Box>
-                    </>
-                  )}
-                </Box>
-              </Grid>
-            )
-        )}
-      </Grid>
+      {comments.length > 0 && (
+        <Grid container className="mt-4 p-2 border rounded-lg border-gray-300">
+          {comments.map(
+            (el) =>
+              el.visible && (
+                <Grid
+                  className="w-[100%] min-h-[40px] bg-bg-main my-1 border rounded-lg flex flex-col px-4"
+                  item
+                  key={el.id}
+                >
+                  <Box className="text-gray-400 flex justify-between">
+                    <Typography>{el.authorName}</Typography>
+                    <Typography>
+                      {el.dateTime.replace(/T|Z/g, ' ').split('.', 1)}
+                    </Typography>
+                  </Box>
+                  <Box className=" flex justify-between">
+                    {editingCommentId === el.id ? (
+                      <>
+                        <TextField
+                          className="w-full pb-1"
+                          value={editedText}
+                          onChange={(e) => setEditedText(e.target.value)}
+                          onBlur={() => handleUpdateComment(el.id)}
+                        />
+                        <Box className="w-[140px] flex p-2">
+                          <Button onClick={() => handleUpdateComment(el.id)}>
+                            <Label label={t('Save')} />
+                          </Button>
+                          <Button onClick={cancelEdit}>
+                            <Label label={t('Cancel')} />
+                          </Button>
+                        </Box>
+                      </>
+                    ) : (
+                      <>
+                        <Typography className="flex items-center">
+                          {el.text}
+                        </Typography>
+                        <Box className="w-[140px] flex p-2">
+                          <Button
+                            onClick={() => handleEditComment(el.id, el.text)}
+                          >
+                            <Label label={t('Edit')} />
+                          </Button>
+                          <Button
+                            onClick={() =>
+                              updateCommentVisibility(el.id, false)
+                            }
+                          >
+                            <DeleteIcon />
+                          </Button>
+                        </Box>
+                      </>
+                    )}
+                  </Box>
+                </Grid>
+              )
+          )}
+        </Grid>
+      )}
     </Box>
   );
 };

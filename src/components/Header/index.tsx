@@ -31,7 +31,7 @@ const Header = () => {
             }}
           >
             <Button
-              className="bg-bg-button text-text-title"
+              className="bg-bg-button text-white"
               color="inherit"
               onClick={handleLogOut}
             >

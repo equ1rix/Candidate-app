@@ -24,9 +24,7 @@ const ModalContext = createContext<ModalContextProps>({
 });
 
 export const ModalContextProvider = ({
-  children,
-  positions,
-  statuses
+  children
 }: ModalContextProviderProps) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
@@ -47,13 +45,7 @@ export const ModalContextProvider = ({
   return (
     <ModalContext.Provider value={contextValue}>
       {children}
-      {isOpenModal && (
-        <CandidatesModal
-          statuses={statuses || []}
-          positions={positions || []}
-          onClose={closeModal}
-        />
-      )}
+      {isOpenModal && <CandidatesModal onClose={closeModal} />}
     </ModalContext.Provider>
   );
 };

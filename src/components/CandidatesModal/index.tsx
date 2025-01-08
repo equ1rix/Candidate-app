@@ -17,8 +17,8 @@ import { useTranslation } from 'react-i18next';
 import { mock } from 'helpers';
 import { db } from 'helpers/firebaseConfig';
 import { ModalContext } from 'context/ModalTaskContext';
-import { Position } from 'hooks/useFetchPositions';
-import { Statuses } from 'hooks/useFetchStatuses';
+import { useFetchPositions } from 'hooks/useFetchPositions';
+import { useFetchStatuses } from 'hooks/useFetchStatuses';
 import useUploadCV from 'hooks/useUploadCV';
 import { useFetchUsers } from 'hooks/useFetchUsers';
 
@@ -28,26 +28,23 @@ import Label from 'components/Label';
 
 type CandidatesModalProps = {
   onClose: () => void;
-  positions: Position[];
-  statuses: Statuses[];
 };
 
-const CandidatesModal = ({
-  onClose = mock,
-  statuses,
-  positions
-}: CandidatesModalProps) => {
+const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [gitHub, setGitHub] = useState<string>('');
   const [linkedIn, setLinkedIn] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
-  const [position, setPosition] = useState<string>('');
+  const [status, setStatus] = useState<string>('all_statuses');
+  const [position, setPosition] = useState<string>('all_positions');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { closeModal, isOpenModal } = useContext(ModalContext);
   const [cvUrl, setCvUrl] = useState<string | null>(null);
   const [assignedUser, setAssignedUser] = useState<string | null>(null);
+
+  const { statuses } = useFetchStatuses();
+  const { positions } = useFetchPositions();
 
   const { users } = useFetchUsers();
 

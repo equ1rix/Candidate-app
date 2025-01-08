@@ -124,8 +124,8 @@ const Homepage = () => {
           />
           <CandidatesModal
             onClose={closeModal}
-            statuses={statuses}
-            positions={positions}
+            // statuses={statuses}
+            // positions={positions}
           />
           {openDrawer && (
             <CandidateDrawer
