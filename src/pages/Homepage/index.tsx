@@ -14,7 +14,6 @@ import { useFetchPermissions } from 'hooks/useFetchPermissions';
 import Candidates from 'components/Candidates';
 import Sidebar from 'components/Sidebar';
 import Header from 'components/Header';
-import CandidatesModal from 'components/CandidatesModal';
 import CandidateDrawer from 'components/CandidateDrawer';
 
 export interface Candidate {
@@ -34,7 +33,7 @@ export interface Candidate {
 const Homepage = () => {
   const { statuses } = useFetchStatuses();
   const { positions } = useFetchPositions();
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { openModal } = useContext(ModalContext);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedPosition, setSelectedPosition] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string>('');
@@ -122,11 +121,7 @@ const Homepage = () => {
             openDrawer={openCandidateInfo}
             selectedStatus={selectedStatus}
           />
-          <CandidatesModal
-            onClose={closeModal}
-            // statuses={statuses}
-            // positions={positions}
-          />
+
           {openDrawer && (
             <CandidateDrawer
               candidate={openDrawer}

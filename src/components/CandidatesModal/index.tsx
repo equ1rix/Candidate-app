@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Button,
@@ -16,9 +16,8 @@ import { useTranslation } from 'react-i18next';
 
 import { mock } from 'helpers';
 import { db } from 'helpers/firebaseConfig';
-import { ModalContext } from 'context/ModalTaskContext';
-import { useFetchPositions } from 'hooks/useFetchPositions';
-import { useFetchStatuses } from 'hooks/useFetchStatuses';
+import { Position } from 'hooks/useFetchPositions';
+import { Statuses } from 'hooks/useFetchStatuses';
 import useUploadCV from 'hooks/useUploadCV';
 import { useFetchUsers } from 'hooks/useFetchUsers';
 
@@ -28,9 +27,17 @@ import Label from 'components/Label';
 
 type CandidatesModalProps = {
   onClose: () => void;
+  positions: Position[];
+  statuses: Statuses[];
+  isOpenModal: boolean;
 };
 
-const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
+const CandidatesModal = ({
+  onClose = mock,
+  positions,
+  statuses,
+  isOpenModal = false
+}: CandidatesModalProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -39,12 +46,9 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
   const [status, setStatus] = useState<string>('all_statuses');
   const [position, setPosition] = useState<string>('all_positions');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  const { closeModal, isOpenModal } = useContext(ModalContext);
+
   const [cvUrl, setCvUrl] = useState<string | null>(null);
   const [assignedUser, setAssignedUser] = useState<string | null>(null);
-
-  const { statuses } = useFetchStatuses();
-  const { positions } = useFetchPositions();
 
   const { users } = useFetchUsers();
 
@@ -111,7 +115,7 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
         cvUrl: cvUrl,
         assignedUser: assignedUser
       });
-      closeModal();
+      onClose();
     } catch (err) {}
   };
 
@@ -218,7 +222,7 @@ const CandidatesModal = ({ onClose = mock }: CandidatesModalProps) => {
                   type="submit"
                   variant="contained"
                   disabled={isButtonDisabled}
-                  className="bg-bg-modalButton"
+                  className={`bg-bg-modalButton ${isButtonDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                   <Label label={t('Save')} />
                 </Button>

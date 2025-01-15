@@ -4,6 +4,7 @@ import {
   FormControl,
   Grid,
   TextField,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -11,12 +12,14 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 import { selectUserName } from '../../redux/selector';
-import DeleteIcon from 'components/Icons/deleteIcon';
-import Label from 'components/Label';
 import useGetComments from 'hooks/useGetComments';
 import useUpdateCommentText from 'hooks/useUpdateCommentText';
 import useUpdateCommentVisibility from 'hooks/useUpdateCommentVisibility';
 import useAddComment from 'hooks/useAddComment';
+import CreateIcon from '@mui/icons-material/Create';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import ClearIcon from '@mui/icons-material/Clear';
+import DoneIcon from '@mui/icons-material/Done';
 
 type CandidateCommentsProps = {
   candidateId: string;
@@ -82,6 +85,13 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
     }
   };
 
+  const handleDeleteComment = async (id: string) => {
+    await updateCommentVisibility(id, false);
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment.id !== id)
+    );
+  };
+
   return (
     <Box>
       <Grid container direction="column" spacing={2}>
@@ -123,11 +133,30 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
                   item
                   key={el.id}
                 >
-                  <Box className="text-gray-400 flex justify-between">
+                  <Box className="text-gray-400 flex justify-between my-2">
                     <Typography>{el.authorName}</Typography>
-                    <Typography>
-                      {el.dateTime.replace(/T|Z/g, ' ').split('.', 1)}
-                    </Typography>
+                    <Tooltip
+                      title={new Date(el.dateTime).toLocaleString('en-US', {
+                        month: 'long',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                      })}
+                      arrow
+                    >
+                      <Typography>
+                        {new Date(el.dateTime).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: '2-digit',
+                          ...(new Date(el.dateTime).getFullYear() !==
+                          new Date().getFullYear()
+                            ? { year: 'numeric' }
+                            : {})
+                        })}
+                      </Typography>
+                    </Tooltip>
                   </Box>
                   <Box className=" flex justify-between">
                     {editingCommentId === el.id ? (
@@ -140,10 +169,10 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
                         />
                         <Box className="w-[140px] flex p-2">
                           <Button onClick={() => handleUpdateComment(el.id)}>
-                            <Label label={t('Save')} />
+                            <DoneIcon className="text-bg-button" />
                           </Button>
                           <Button onClick={cancelEdit}>
-                            <Label label={t('Cancel')} />
+                            <ClearIcon className="text-bg-button" />
                           </Button>
                         </Box>
                       </>
@@ -156,14 +185,10 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
                           <Button
                             onClick={() => handleEditComment(el.id, el.text)}
                           >
-                            <Label label={t('Edit')} />
+                            <CreateIcon className="text-bg-button" />
                           </Button>
-                          <Button
-                            onClick={() =>
-                              updateCommentVisibility(el.id, false)
-                            }
-                          >
-                            <DeleteIcon />
+                          <Button onClick={() => handleDeleteComment(el.id)}>
+                            <DeleteForeverIcon className="text-bg-button" />
                           </Button>
                         </Box>
                       </>
