@@ -1,8 +1,9 @@
 import { ReactNode, createContext, useState } from 'react';
 
+import { Statuses, useFetchStatuses } from 'hooks/useFetchStatuses';
+import { Position, useFetchPositions } from 'hooks/useFetchPositions';
+
 import CandidatesModal from 'components/CandidatesModal';
-import { Statuses } from 'hooks/useFetchStatuses';
-import { Position } from 'hooks/useFetchPositions';
 
 export type ModalContextProps = {
   isOpenModal: boolean;
@@ -23,10 +24,10 @@ const ModalContext = createContext<ModalContextProps>({
 });
 
 export const ModalContextProvider = ({
-  children,
-  positions,
-  statuses
+  children
 }: ModalContextProviderProps) => {
+  const { statuses } = useFetchStatuses();
+  const { positions } = useFetchPositions();
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
   const openModal = () => {
@@ -46,13 +47,14 @@ export const ModalContextProvider = ({
   return (
     <ModalContext.Provider value={contextValue}>
       {children}
-      {isOpenModal && (
+      {
         <CandidatesModal
-          statuses={statuses || []}
-          positions={positions || []}
           onClose={closeModal}
+          isOpenModal={isOpenModal}
+          positions={positions}
+          statuses={statuses}
         />
-      )}
+      }
     </ModalContext.Provider>
   );
 };

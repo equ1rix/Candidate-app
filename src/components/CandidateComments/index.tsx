@@ -4,6 +4,7 @@ import {
   FormControl,
   Grid,
   TextField,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -11,12 +12,14 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 import { selectUserName } from '../../redux/selector';
-import DeleteIcon from 'components/Icons/deleteIcon';
-import Label from 'components/Label';
 import useGetComments from 'hooks/useGetComments';
 import useUpdateCommentText from 'hooks/useUpdateCommentText';
 import useUpdateCommentVisibility from 'hooks/useUpdateCommentVisibility';
 import useAddComment from 'hooks/useAddComment';
+import CreateIcon from '@mui/icons-material/Create';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import ClearIcon from '@mui/icons-material/Clear';
+import DoneIcon from '@mui/icons-material/Done';
 
 type CandidateCommentsProps = {
   candidateId: string;
@@ -82,6 +85,13 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
     }
   };
 
+  const handleDeleteComment = async (id: string) => {
+    await updateCommentVisibility(id, false);
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment.id !== id)
+    );
+  };
+
   return (
     <Box>
       <Grid container direction="column" spacing={2}>
@@ -90,7 +100,7 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
           fontWeight="bold"
           sx={{ flexGrow: 1, padding: 3 }}
         >
-          {t('Candidate Info')}
+          {t('Comments')}
         </Typography>
         <Grid item>
           <FormControl fullWidth>
@@ -113,63 +123,82 @@ const CandidateComments = ({ candidateId }: CandidateCommentsProps) => {
           </Button>
         </Grid>
       </Grid>
-      <Grid container className="mt-4 p-2 border rounded-lg border-gray-300">
-        {comments.map(
-          (el) =>
-            el.visible && (
-              <Grid
-                className="w-[100%] min-h-[40px] bg-bg-main my-1 border rounded-lg flex flex-col px-4"
-                item
-                key={el.id}
-              >
-                <Box className="text-gray-400 flex justify-between">
-                  <Typography>{el.authorName}</Typography>
-                  <Typography>
-                    {el.dateTime.replace(/T|Z/g, ' ').split('.', 1)}
-                  </Typography>
-                </Box>
-                <Box className=" flex justify-between">
-                  {editingCommentId === el.id ? (
-                    <>
-                      <TextField
-                        className="w-full pb-1"
-                        value={editedText}
-                        onChange={(e) => setEditedText(e.target.value)}
-                        onBlur={() => handleUpdateComment(el.id)}
-                      />
-                      <Box className="w-[140px] flex p-2">
-                        <Button onClick={() => handleUpdateComment(el.id)}>
-                          <Label label={t('Save')} />
-                        </Button>
-                        <Button onClick={cancelEdit}>
-                          <Label label={t('Cancel')} />
-                        </Button>
-                      </Box>
-                    </>
-                  ) : (
-                    <>
-                      <Typography className="flex items-center">
-                        {el.text}
+      {comments.length > 0 && (
+        <Grid container className="mt-4 p-2 border rounded-lg border-gray-300">
+          {comments.map(
+            (el) =>
+              el.visible && (
+                <Grid
+                  className="w-[100%] min-h-[40px] bg-bg-main my-1 border rounded-lg flex flex-col px-4"
+                  item
+                  key={el.id}
+                >
+                  <Box className="text-gray-400 flex justify-between my-2">
+                    <Typography>{el.authorName}</Typography>
+                    <Tooltip
+                      title={new Date(el.dateTime).toLocaleString('en-US', {
+                        month: 'long',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                      })}
+                      arrow
+                    >
+                      <Typography>
+                        {new Date(el.dateTime).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: '2-digit',
+                          ...(new Date(el.dateTime).getFullYear() !==
+                          new Date().getFullYear()
+                            ? { year: 'numeric' }
+                            : {})
+                        })}
                       </Typography>
-                      <Box className="w-[140px] flex p-2">
-                        <Button
-                          onClick={() => handleEditComment(el.id, el.text)}
-                        >
-                          <Label label={t('Edit')} />
-                        </Button>
-                        <Button
-                          onClick={() => updateCommentVisibility(el.id, false)}
-                        >
-                          <DeleteIcon />
-                        </Button>
-                      </Box>
-                    </>
-                  )}
-                </Box>
-              </Grid>
-            )
-        )}
-      </Grid>
+                    </Tooltip>
+                  </Box>
+                  <Box className=" flex justify-between">
+                    {editingCommentId === el.id ? (
+                      <>
+                        <TextField
+                          className="w-full pb-1"
+                          value={editedText}
+                          onChange={(e) => setEditedText(e.target.value)}
+                          onBlur={() => handleUpdateComment(el.id)}
+                        />
+                        <Box className="w-[140px] flex p-2">
+                          <Button onClick={() => handleUpdateComment(el.id)}>
+                            <DoneIcon className="text-bg-button" />
+                          </Button>
+                          <Button onClick={cancelEdit}>
+                            <ClearIcon className="text-bg-button" />
+                          </Button>
+                        </Box>
+                      </>
+                    ) : (
+                      <>
+                        <Typography className="flex items-center">
+                          {el.text}
+                        </Typography>
+                        <Box className="w-[140px] flex p-2">
+                          <Button
+                            onClick={() => handleEditComment(el.id, el.text)}
+                          >
+                            <CreateIcon className="text-bg-button" />
+                          </Button>
+                          <Button onClick={() => handleDeleteComment(el.id)}>
+                            <DeleteForeverIcon className="text-bg-button" />
+                          </Button>
+                        </Box>
+                      </>
+                    )}
+                  </Box>
+                </Grid>
+              )
+          )}
+        </Grid>
+      )}
     </Box>
   );
 };

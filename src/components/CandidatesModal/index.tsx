@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Button,
@@ -6,9 +6,6 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   SelectChangeEvent,
   TextField,
   Typography
@@ -16,37 +13,44 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
-import { db } from 'helpers/firebaseConfig';
-import { mock } from 'helpers';
-import { ModalContext } from 'context/ModalTaskContext';
 
-import CustomModal from 'components/CustomModal';
-import Label from 'components/Label';
+import { mock } from 'helpers';
+import { db } from 'helpers/firebaseConfig';
 import { Position } from 'hooks/useFetchPositions';
 import { Statuses } from 'hooks/useFetchStatuses';
 import useUploadCV from 'hooks/useUploadCV';
+import { useFetchUsers } from 'hooks/useFetchUsers';
+
+import Selector from 'components/Selector';
+import CustomModal from 'components/CustomModal';
+import Label from 'components/Label';
 
 type CandidatesModalProps = {
   onClose: () => void;
   positions: Position[];
   statuses: Statuses[];
+  isOpenModal: boolean;
 };
 
 const CandidatesModal = ({
   onClose = mock,
+  positions,
   statuses,
-  positions
+  isOpenModal = false
 }: CandidatesModalProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [gitHub, setGitHub] = useState<string>('');
   const [linkedIn, setLinkedIn] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
-  const [position, setPosition] = useState<string>('');
+  const [status, setStatus] = useState<string>('all_statuses');
+  const [position, setPosition] = useState<string>('all_positions');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  const { closeModal, isOpenModal } = useContext(ModalContext);
+
   const [cvUrl, setCvUrl] = useState<string | null>(null);
+  const [assignedUser, setAssignedUser] = useState<string | null>(null);
+
+  const { users } = useFetchUsers();
 
   const { uploadCV, uploading, error } = useUploadCV({
     onUploadSuccess: (url) => setCvUrl(url)
@@ -70,8 +74,7 @@ const CandidatesModal = ({
     }
   ];
 
-  const isButtonDisabled = !name || !email || !position || !status;
-
+  const isButtonDisabled = !name || !email;
   const handleChangePosition = (e: SelectChangeEvent) => {
     setPosition(e.target.value);
   };
@@ -90,6 +93,10 @@ const CandidatesModal = ({
     stateHandler: React.Dispatch<React.SetStateAction<boolean>>
   ) => stateHandler(e.target.checked);
 
+  const handleUserChange = (e: SelectChangeEvent) => {
+    setAssignedUser(e.target.value);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -105,9 +112,10 @@ const CandidatesModal = ({
         github: gitHub,
         linkedin: linkedIn,
         status: status,
-        cvUrl: cvUrl
+        cvUrl: cvUrl,
+        assignedUser: assignedUser
       });
-      closeModal();
+      onClose();
     } catch (err) {}
   };
 
@@ -150,38 +158,25 @@ const CandidatesModal = ({
                 />
               </Grid>
             ))}
-            <Grid item>
-              <InputLabel id="status-select-label">{t('Position')}</InputLabel>
-              <Select
-                labelId="status-select-label"
-                id="status-select"
-                value={position}
-                label="Position"
-                onChange={handleChangeStatus}
-              >
-                {positions.map((pos) => (
-                  <MenuItem key={pos.id} value={pos.id}>
-                    {pos.title}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item>
-              <InputLabel id="status-select-label">{t('Status')}</InputLabel>
-              <Select
-                labelId="status-select-label"
-                id="status-select"
-                value={status}
-                label="Status"
-                onChange={handleChangePosition}
-              >
-                {statuses.map((el) => (
-                  <MenuItem key={el.id} value={el.id}>
-                    {el.title}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
+            <Selector
+              title={t('Position')}
+              items={positions}
+              value={position}
+              handleChange={handleChangePosition}
+            />
+            <Selector
+              title={t('Status')}
+              items={statuses}
+              value={status}
+              handleChange={handleChangeStatus}
+            />
+            <Selector
+              title={t('Assigned to')}
+              items={users}
+              value={assignedUser}
+              getItemTitle={(user: any) => user.name}
+              handleChange={handleUserChange}
+            />
             <Grid item className="mt-4">
               <Box className="border border-gray-300 p-4 rounded-lg shadow-sm">
                 <label className="block text-gray-700 font-semibold mb-2">
@@ -227,7 +222,7 @@ const CandidatesModal = ({
                   type="submit"
                   variant="contained"
                   disabled={isButtonDisabled}
-                  className="bg-bg-modalButton"
+                  className={`bg-bg-modalButton ${isButtonDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                   <Label label={t('Save')} />
                 </Button>

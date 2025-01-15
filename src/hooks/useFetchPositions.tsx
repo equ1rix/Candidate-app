@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { collection, getDocs, query } from 'firebase/firestore';
+
 import { db } from 'helpers/firebaseConfig';
 
 export type Position = {

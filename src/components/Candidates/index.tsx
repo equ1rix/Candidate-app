@@ -113,52 +113,58 @@ const Candidates = ({
       }}
     >
       <Grid container alignItems="center">
-        <Table
-          size="small"
-          sx={{
-            width: '100%',
-            tableLayout: 'fixed'
-          }}
-        >
-          <TableHead>
-            <TableRow>
-              {titleTable.map((el) => (
-                <TableCell key={el}>
-                  <Typography className="text-bg-highlightButton text-sm">
-                    {el}
-                  </Typography>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {candidates.map((candidate) => (
-              <TableRow
-                key={candidate.id}
-                className="bg-bg-main hover:bg-bg-modalSecondButton transition duration-300 ease-in-out"
-              >
-                {getCandidateRow(candidate).map((cell, index) => (
-                  <TableCell
-                    key={index}
-                    onClick={handlerOpenDrawer(candidate.id)}
-                    className="border-black border-opacity-[0.2] border-y-2 p-[12px]"
-                  >
-                    <Typography
-                      className={cell.style}
-                      sx={{
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                      }}
-                    >
-                      {cell.title}
+        {candidates.length > 0 ? (
+          <Table
+            size="small"
+            sx={{
+              width: '100%',
+              tableLayout: 'fixed'
+            }}
+          >
+            <TableHead>
+              <TableRow>
+                {titleTable.map((el) => (
+                  <TableCell key={el}>
+                    <Typography className="text-bg-highlightButton text-sm">
+                      {el}
                     </Typography>
                   </TableCell>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {candidates.map((candidate) => (
+                <TableRow
+                  key={candidate.id}
+                  className="bg-bg-main hover:bg-bg-modalSecondButton transition duration-300 ease-in-out"
+                >
+                  {getCandidateRow(candidate).map((cell, index) => (
+                    <TableCell
+                      key={index}
+                      onClick={handlerOpenDrawer(candidate.id)}
+                      className="border-black border-opacity-[0.2] border-y-2 p-[12px]"
+                    >
+                      <Typography
+                        className={cell.style}
+                        sx={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {cell.title}
+                      </Typography>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <Typography className="mt-2 ml-2">
+            Sorry, no candidates found
+          </Typography>
+        )}
       </Grid>
 
       <Grid
